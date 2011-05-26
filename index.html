@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <title>Canvas Based Heatmap API</title>
+    <script type="text/javascript" src="heatmap.js"></script>
+    
+    <style type="text/css">
+        #canv{
+            border:1px #CCC solid;
+        }
+    </style>
+  </head>
+  <body>
+    <h1>Sunng's canavs based heatmap api</h1>
+    <div><canvas width="300" height="215" id="canv"></canvas></div>
+    <p><input type="text" value="20" id="pressure" /> <button onclick="render();">HEAT MAP!</button></p>
+    
+    <script type="text/javascript">
+        heatmap = new HeatMap("canv");
+        document.getElementById("canv").onclick = function(e){
+            var localX = e.clientX-e.target.offsetLeft;
+            var localY = e.clientY-e.target.offsetTop;
+            
+            var pressure = parseInt(document.getElementById("pressure").value);
+            heatmap.push(localX, localY, pressure);
+            
+            document.getElementById("canv").getContext("2d").fillText(pressure, localX, localY);
+            
+            console.log(localX, localY);
+        }
+        
+        function render(){
+            heatmap.spread(1);
+            heatmap.render(/*function(value){
+                var light = value * 100;
+                return "hsl(20, 75%, "+light+"%)";
+            }*/);
+        }
+    </script>
+  </body>
+</html>
