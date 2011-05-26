@@ -14,7 +14,11 @@
     <h1>Sunng's HeatMap API</h1>
     <p>Click on the canvas below to add some data, then hit the "HEAT MAP!" button. Refresh to reset. </p>
     <div><canvas width="400" height="300" id="canv"></canvas></div>
-    <p>Value for each click: <input type="text" value="20" id="pressure" /> <button onclick="render();">HEAT MAP!</button></p>
+    <p>Value for each click: <input type="text" value="20" id="pressure" /> 
+    <button onclick="render();">HEAT MAP!</button>
+    <button onclick="reset();">Reset</button>
+    </p>
+    <p>Data Added: <span id="info">No Data.</span></p>
     
     <script type="text/javascript">
         // create heatmap object 
@@ -30,17 +34,15 @@
             heatmap.push(localX, localY, pressure);
             
             document.getElementById("canv").getContext("2d").fillText(pressure, localX, localY);
-            
+            document.getElementById("info").innerHTML= "x:"+localX+", y:"+localY+", value:"+pressure;
+        }
+        function reset() {
+            heatmap.clear();
         }
         
         function render(){
-            // radius of a point
-            heatmap.spread(1);
             // you can render the map with custom colors
-            heatmap.render(/*function(value){
-                var light = value * 100;
-                return "hsl(20, 75%, "+light+"%)";
-            }*/);
+            heatmap.render(1, null);
         }
     </script>
     <p>Watch the source code on <a href="https://github.com/sunng87/canvas-heatmap">github</a></p>

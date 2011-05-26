@@ -43,50 +43,26 @@ HeatMap.prototype.push = function(x, y, data){
     }
 };
 
-HeatMap.prototype.spread = function(step){
+HeatMap.prototype.render = function(step, f_value_color){
     step = step || 1;
-    this.value = {};
 
-    for(var pos in this.data){
-        var data = this.data[pos];
-        var radius = data / step;
-        
-        var x = parseInt(pos.split(":")[0]);
-        var y = parseInt(pos.split(":")[1]);
-        
-        // calculate point x.y 
-        for(var scanx=x-radius; scanx<x+radius; scanx+=this.resolution){            
-            // out of extend
-            if(scanx<0 || scanx>this.width){
-                continue;
-            }
-            for(var scany=y-radius; scany<y+radius; scany+=this.resolution){
-            
-                if(scany<0 || scany>this.height){
-                    continue;
-                }                  
-                
-                var dist = Math.sqrt(Math.pow((scanx-x), 2)+Math.pow((scany-y), 2));
-                if(dist > radius){
-                    continue;
-                } else {
-                    var value = data - step * dist;
-                    
-                    var id = scanx + ":" + scany ;
-                
-                    if(this.value[id]){
-                        this.value[id] = this.value[id] + value;           
-                    } else {
-                        this.value[id] = value;
-                    }
-                }
-            }
-        }        
+    var self = this;
+    var worker = new Worker('heatmap-calc.js');
+    worker.postMessage({
+        'data': self.data,
+        'resolution': self.resolution,
+        'width': self.width,
+        'height': self.height,
+        'step': step
+    });
+    worker.onmessage = function(e){
+        self.value = e.data.value;
+        self._render(f_value_color);
     }
 };
 
 
-HeatMap.prototype.render = function(f_value_color){
+HeatMap.prototype._render = function(f_value_color){
     f_value_color = f_value_color || HeatMap.defaultValue2Color;
 
     var ctx = this.canvas.getContext("2d");
