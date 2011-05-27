@@ -15,14 +15,18 @@
     <p>Click on the canvas below to add some data, then hit the "HEAT MAP!" button. Refresh to reset. </p>
     <div><canvas width="400" height="300" id="canv"></canvas></div>
     <p>Value for each click: <input type="text" value="20" id="pressure" /> 
+    <button onclick="genData();">Generate Random Data</button>
     <button onclick="render();">HEAT MAP!</button>
     <button onclick="reset();">Reset</button>
+    <span id="status"></span>
     </p>
     <p>Data Added: <span id="info">No Data.</span></p>
     
     <script type="text/javascript">
         // create heatmap object 
         heatmap = new HeatMap("canv");
+        heatmap.onRenderingStart = function(){document.getElementById('status').innerHTML = 'rendering...'}
+        heatmap.onRenderingEnd = function(){document.getElementById('status').innerHTML = 'ready'}
 
         /* add data interactively */
         document.getElementById("canv").onclick = function(e){
@@ -30,11 +34,25 @@
             var localY = e.clientY-e.target.offsetTop;
             
             var pressure = parseInt(document.getElementById("pressure").value);
+            addData(localX, localY, pressure);
+        }
+
+        function genData(){
+            var amount = 30;
+            var pressure = parseInt(document.getElementById("pressure").value);
+            for (var i=0; i< amount; i++){
+                var x = Math.floor(Math.random() * heatmap.width);
+                var y = Math.floor(Math.random() * heatmap.height);
+                addData(x, y, pressure);
+            }
+        }
+
+        function addData(x, y, v){
             // push data into the map
-            heatmap.push(localX, localY, pressure);
+            heatmap.push(x, y, v);
             
-            document.getElementById("canv").getContext("2d").fillText(pressure, localX, localY);
-            document.getElementById("info").innerHTML= "x:"+localX+", y:"+localY+", value:"+pressure;
+            document.getElementById("canv").getContext("2d").fillText(v, x, y);
+            document.getElementById("info").innerHTML= "x:"+x+", y:"+y+", value:"+v;
         }
         function reset() {
             heatmap.clear();

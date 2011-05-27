@@ -27,15 +27,19 @@ var HeatMap = function(canvasId, resolution){
     }
     
     this.resolution = resolution || 1;
+    this.worker = new Worker('heatmap-calc.js');
     
-    this.width = this.canvas.width;
-    this.height = this.canvas.height;
+    this.width = parseInt(this.canvas.width);
+    this.height = parseInt(this.canvas.height);
+
+    this.onRenderingStart = null;
+    this.onRenderingEnd = null;
     
     this.data = {};
 };
 
 HeatMap.prototype.push = function(x, y, data){
-    var id = x+":"+y;
+    var id = x+y*this.width;
     if(this.data[id]){
         this.data[id] = this.data[id] + data;           
     } else {
@@ -47,17 +51,23 @@ HeatMap.prototype.render = function(step, f_value_color){
     step = step || 1;
 
     var self = this;
-    var worker = new Worker('heatmap-calc.js');
-    worker.postMessage({
+    this.worker.postMessage({
         'data': self.data,
         'resolution': self.resolution,
         'width': self.width,
         'height': self.height,
-        'step': step
+        'step': step,
+        'value': self.value
     });
-    worker.onmessage = function(e){
+    if (this.onRenderingStart){
+        this.onRenderingStart();
+    }
+    this.worker.onmessage = function(e){
         self.value = e.data.value;
         self._render(f_value_color);
+        if (self.onRenderingEnd){
+            self.onRenderingEnd();
+        }
     }
 };
 
@@ -79,8 +89,8 @@ HeatMap.prototype._render = function(f_value_color){
     }
     
     for(var pos in this.value){
-        var x = parseInt(pos.split(":")[0]);
-        var y = parseInt(pos.split(":")[1]);
+        var x = pos%this.width;
+        var y = Math.floor(pos/this.width);
         
         var color = f_value_color(this.value[pos] / maxValue);
         ctx.fillStyle = color;

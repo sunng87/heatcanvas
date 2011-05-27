@@ -1,12 +1,12 @@
 
 onmessage = function(e){
-    value = {};
+    value = e.data.value || {};
     for(var pos in e.data.data){
         var data = e.data.data[pos];
         var radius = data / e.data.step;
         
-        var x = parseInt(pos.split(":")[0]);
-        var y = parseInt(pos.split(":")[1]);
+        var x = pos%e.data.width;
+        var y = Math.floor(pos/e.data.width);
         
         // calculate point x.y 
         for(var scanx=x-radius; scanx<x+radius; scanx+=e.data.resolution){            
@@ -26,7 +26,7 @@ onmessage = function(e){
                 } else {
                     var v = data - e.data.step * dist;
                     
-                    var id = scanx + ":" + scany ;
+                    var id = scanx+scany*e.data.width ;
                 
                     if(value[id]){
                         value[id] = value[id] + v;           
