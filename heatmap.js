@@ -36,6 +36,7 @@ var HeatMap = function(canvasId, resolution){
     this.onRenderingEnd = null;
     
     this.data = {};
+    this.alpha = 1;
 };
 
 HeatMap.prototype.push = function(x, y, data){
@@ -64,6 +65,7 @@ HeatMap.prototype.render = function(step, f_value_color){
     }
     this.worker.onmessage = function(e){
         self.value = e.data.value;
+        self.data = {};
         self._render(f_value_color);
         if (self.onRenderingEnd){
             self.onRenderingEnd();
@@ -79,7 +81,7 @@ HeatMap.prototype._render = function(f_value_color){
     ctx.clearRect(0, 0, this.width, this.height);
     
     // reader background as black
-    ctx.fillStyle = "rgb(0,0,0)";
+    ctx.fillStyle = "rgba(0,0,0,"+this.alpha+")";
     ctx.fillRect(0, 0, this.width, this.height);
     
     // maximum 
@@ -110,7 +112,7 @@ HeatMap.prototype.clear = function(){
 
 HeatMap.defaultValue2Color = function(value){
     var hue = (1 - value) * 240;
-    var light = value * 60;
+    var light = value *60;
     return "hsl("+hue+", 80%, "+light+"%)";
 }
 
