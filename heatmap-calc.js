@@ -9,12 +9,12 @@ onmessage = function(e){
         var y = Math.floor(pos/e.data.width);
         
         // calculate point x.y 
-        for(var scanx=x-radius; scanx<x+radius; scanx+=e.data.resolution){            
+        for(var scanx=x-radius; scanx<x+radius; scanx+=1){            
             // out of extend
             if(scanx<0 || scanx>e.data.width){
                 continue;
             }
-            for(var scany=y-radius; scany<y+radius; scany+=e.data.resolution){
+            for(var scany=y-radius; scany<y+radius; scany+=1){
             
                 if(scany<0 || scany>e.data.height){
                     continue;

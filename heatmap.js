@@ -20,13 +20,12 @@
  * Heatmap api based on canvas
  *
  */
-var HeatMap = function(canvasId, resolution){
+var HeatMap = function(canvasId){
     this.canvas = document.getElementById(canvasId);
     if(this.canvas == null){
         return null;
     }
     
-    this.resolution = resolution || 1;
     this.worker = new Worker('heatmap-calc.js');
     
     this.width = parseInt(this.canvas.width);
@@ -36,7 +35,6 @@ var HeatMap = function(canvasId, resolution){
     this.onRenderingEnd = null;
     
     this.data = {};
-    this.alpha = 1;
 };
 
 HeatMap.prototype.push = function(x, y, data){
@@ -54,7 +52,6 @@ HeatMap.prototype.render = function(step, f_value_color){
     var self = this;
     this.worker.postMessage({
         'data': self.data,
-        'resolution': self.resolution,
         'width': self.width,
         'height': self.height,
         'step': step,
@@ -81,7 +78,7 @@ HeatMap.prototype._render = function(f_value_color){
     ctx.clearRect(0, 0, this.width, this.height);
     
     // reader background as black
-    ctx.fillStyle = "rgba(0,0,0,"+this.alpha+")";
+    ctx.fillStyle = this.bgcolor || "rgb(0,0,0)";
     ctx.fillRect(0, 0, this.width, this.height);
     
     // maximum 
@@ -96,7 +93,7 @@ HeatMap.prototype._render = function(f_value_color){
         
         var color = f_value_color(this.value[pos] / maxValue);
         ctx.fillStyle = color;
-        ctx.fillRect(x, y, this.resolution, this.resolution);
+        ctx.fillRect(x, y, 1, 1);
             
         
     }
