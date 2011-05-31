@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf8" />
+        <title>Google Heatmap</title>
+
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="heatmap.js"></script>
+        <script type="text/javascript" src="heatmap-googlemaps.js"></script>
+
+        <style type="text/css">
+            #map{
+            }
+        </style>
+
+        <script type="text/javascript">
+            function init() {
+                var latlng = new google.maps.LatLng(37, 104.2);
+                var myoptions = {
+                    zoom: 4,
+                    center: latlng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    panControl: false,
+                    draggable: false,
+                    disableDoubleClickZoom: true,
+                    zoomControl: false,
+                    scrollwheel: false
+                };
+                var map = new google.maps.Map(document.getElementById("map"), myoptions);
+
+                var heatmap = new HeatmapOverlayView(map, 1);
+                heatmap.pushData(32.3, 118.2, 40);
+                heatmap.pushData(30.9, 121.55, 90);
+                heatmap.pushData(39.72, 116.6, 120);
+            }
+        </script>
+    </head>
+
+    <body onload="init();">
+        <div id="map" style="width:600px; height:450px;"></div>
+    </body>
+</html>

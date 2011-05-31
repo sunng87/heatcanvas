@@ -39,3 +39,7 @@ onmessage = function(e){
     }
     postMessage({'value': value});
 }
+
+onerror = function(event){
+    throw new Error(event.message + " (" + event.filename + ":" + event.lineno + ")");
+};
