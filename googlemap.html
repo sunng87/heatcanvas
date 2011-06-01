@@ -24,11 +24,13 @@
                     draggable: false,
                     disableDoubleClickZoom: true,
                     zoomControl: false,
-                    scrollwheel: false
+                    scrollwheel: false,
+                    streetViewControl: false,
+                    keyboardShortcuts: false
                 };
                 var map = new google.maps.Map(document.getElementById("map"), myoptions);
 
-                var heatmap = new HeatmapOverlayView(map, 1);
+                var heatmap = new HeatmapOverlayView(map, {'step':3, 'opacity':0.5});
                 heatmap.pushData(32.3, 118.2, 40);
                 heatmap.pushData(30.9, 121.55, 90);
                 heatmap.pushData(39.72, 116.6, 120);
@@ -37,6 +39,6 @@
     </head>
 
     <body onload="init();">
-        <div id="map" style="width:600px; height:450px;"></div>
+        <div id="map" style="width:700px; height:500px;"></div>
     </body>
 </html>

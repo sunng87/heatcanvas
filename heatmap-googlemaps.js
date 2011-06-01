@@ -1,8 +1,10 @@
 
-function HeatmapOverlayView(map, step){
+function HeatmapOverlayView(map, options){
+    options = options || {};
     this.setMap(map);
     this.heatmap = null;
-    this.step = step || 1;
+    this.step = options.step || 1;
+    this.opacity = options.opacity || 0.6;
     this.data = [];
 }
 
@@ -18,7 +20,7 @@ HeatmapOverlayView.prototype.onAdd = function(){
     canvas.style.height = this.map.getDiv().style.height;
     canvas.width = parseInt(canvas.style.width);
     canvas.height = parseInt(canvas.style.height);
-    canvas.style.opacity = "0.5";
+    canvas.style.opacity = this.opacity;
     container.appendChild(canvas);
 
     this.heatmap = new HeatMap(canvas);

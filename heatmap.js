@@ -69,7 +69,6 @@ HeatMap.prototype.render = function(step, f_value_color){
         'step': step,
         'value': self.value
     };
-    console.dir(msg);
     this.worker.postMessage(msg);
     if (this.onRenderingStart){
         this.onRenderingStart();
@@ -93,9 +92,8 @@ HeatMap.prototype._render = function(f_value_color){
         maxValue = Math.max(this.value[id], maxValue);
     }
     
-    console.log(this.value);
     for(var pos in this.value){
-        var x = pos%this.width;
+        var x = Math.floor(pos%this.width);
         var y = Math.floor(pos/this.width);
         
         var color = f_value_color(this.value[pos] / maxValue);
