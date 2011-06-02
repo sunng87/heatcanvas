@@ -20,16 +20,20 @@
  * Heatmap api based on canvas
  *
  */
-var HeatMap = function(canvasId){
-    this.canvas = document.getElementById(canvasId);
+var HeatMap = function(canvas){
+    if (typeof(canvas) == "string") {
+        this.canvas = document.getElementById(canvas);
+    } else {
+        this.canvas = canvas;
+    }
     if(this.canvas == null){
         return null;
     }
     
     this.worker = new Worker('heatmap-calc.js');
     
-    this.width = parseInt(this.canvas.width);
-    this.height = parseInt(this.canvas.height);
+    this.width = this.canvas.width;
+    this.height = this.canvas.height;
 
     this.onRenderingStart = null;
     this.onRenderingEnd = null;
@@ -50,16 +54,6 @@ HeatMap.prototype.render = function(step, f_value_color){
     step = step || 1;
 
     var self = this;
-    this.worker.postMessage({
-        'data': self.data,
-        'width': self.width,
-        'height': self.height,
-        'step': step,
-        'value': self.value
-    });
-    if (this.onRenderingStart){
-        this.onRenderingStart();
-    }
     this.worker.onmessage = function(e){
         self.value = e.data.value;
         self.data = {};
@@ -67,6 +61,17 @@ HeatMap.prototype.render = function(step, f_value_color){
         if (self.onRenderingEnd){
             self.onRenderingEnd();
         }
+    }
+    var msg = {
+        'data': self.data,
+        'width': self.width,
+        'height': self.height,
+        'step': step,
+        'value': self.value
+    };
+    this.worker.postMessage(msg);
+    if (this.onRenderingStart){
+        this.onRenderingStart();
     }
 };
 
@@ -88,7 +93,7 @@ HeatMap.prototype._render = function(f_value_color){
     }
     
     for(var pos in this.value){
-        var x = pos%this.width;
+        var x = Math.floor(pos%this.width);
         var y = Math.floor(pos/this.width);
         
         var color = f_value_color(this.value[pos] / maxValue);

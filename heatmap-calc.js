@@ -3,9 +3,9 @@ onmessage = function(e){
     value = e.data.value || {};
     for(var pos in e.data.data){
         var data = e.data.data[pos];
-        var radius = data / e.data.step;
+        var radius = Math.floor(data / e.data.step);
         
-        var x = pos%e.data.width;
+        var x = Math.floor(pos%e.data.width);
         var y = Math.floor(pos/e.data.width);
         
         // calculate point x.y 
@@ -39,3 +39,4 @@ onmessage = function(e){
     }
     postMessage({'value': value});
 }
+
