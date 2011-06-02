@@ -42,6 +42,14 @@ var HeatMap = function(canvas){
 };
 
 HeatMap.prototype.push = function(x, y, data){
+    // ignore all data out of extent
+    if (x < 0 || x > this.width) {
+        return ;
+    }
+    if (y < 0 || y > this.height) {
+        return;
+    }
+
     var id = x+y*this.width;
     if(this.data[id]){
         this.data[id] = this.data[id] + data;           

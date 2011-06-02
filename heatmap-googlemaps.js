@@ -40,7 +40,7 @@ HeatmapOverlayView.prototype.draw = function() {
         var proj = this.getProjection();
         for (var i=0, l=this.data.length; i<l; i++) {
             latlon = new google.maps.LatLng(this.data[i].lat, this.data[i].lon);
-            localXY = proj.fromLatLngToContainerPixel(latlon);
+            localXY = proj.fromLatLngToDivPixel(latlon);
             this.heatmap.push(
                     Math.floor(localXY.x), 
                     Math.floor(localXY.y), 
