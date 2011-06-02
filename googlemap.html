@@ -29,6 +29,15 @@
                 for(var i=0,l=data.length; i<l; i++) {
                     heatmap.pushData(data[i][0], data[i][1], data[i][2]);
                 }
+                var zoomLevel;
+                google.maps.event.addListener(map, 'zoom_changed', function() {
+                    zoomLevel = map.getZoom();
+                    map.setCenter(latlng);
+                    if (zoomLevel == 0) {
+                        map.setZoom(10);
+                    }    
+                    heatmap.draw();
+                });
             }
         </script>
     </head>
