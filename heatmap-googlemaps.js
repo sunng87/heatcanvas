@@ -1,5 +1,5 @@
 
-function HeatmapOverlayView(map, options){
+function HeatMapOverlayView(map, options){
     options = options || {};
     this.setMap(map);
     this.heatmap = null;
@@ -9,9 +9,9 @@ function HeatmapOverlayView(map, options){
     this.data = [];
 }
 
-HeatmapOverlayView.prototype = new google.maps.OverlayView();
+HeatMapOverlayView.prototype = new google.maps.OverlayView();
 
-HeatmapOverlayView.prototype.onAdd = function(){
+HeatMapOverlayView.prototype.onAdd = function(){
     var container = document.createElement("div");
     container.style.cssText = "position:absolute;top:0;left:0;border:0";
     container.style.width = "100%";
@@ -30,11 +30,11 @@ HeatmapOverlayView.prototype.onAdd = function(){
     panes.overlayLayer.appendChild(container);
 }
 
-HeatmapOverlayView.prototype.pushData = function(lat, lon, value) {
+HeatMapOverlayView.prototype.pushData = function(lat, lon, value) {
     this.data.push({"lon":lon, "lat":lat, "v":value});
 }
 
-HeatmapOverlayView.prototype.draw = function() {
+HeatMapOverlayView.prototype.draw = function() {
     this.heatmap.clear();
     if (this.data.length > 0) {
         var proj = this.getProjection();
