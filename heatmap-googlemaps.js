@@ -1,16 +1,18 @@
 
-function HeatmapOverlayView(map, options){
+function HeatMapOverlayView(map, options){
     options = options || {};
     this.setMap(map);
     this.heatmap = null;
     this.step = options.step || 1;
+    this.degree = options.degree || HeatMap.LINEAR;
     this.opacity = options.opacity || 0.6;
+    this.colorscheme = options.colorscheme || null;
     this.data = [];
 }
 
-HeatmapOverlayView.prototype = new google.maps.OverlayView();
+HeatMapOverlayView.prototype = new google.maps.OverlayView();
 
-HeatmapOverlayView.prototype.onAdd = function(){
+HeatMapOverlayView.prototype.onAdd = function(){
     var container = document.createElement("div");
     container.style.cssText = "position:absolute;top:0;left:0;border:0";
     container.style.width = "100%";
@@ -29,24 +31,24 @@ HeatmapOverlayView.prototype.onAdd = function(){
     panes.overlayLayer.appendChild(container);
 }
 
-HeatmapOverlayView.prototype.pushData = function(lat, lon, value) {
+HeatMapOverlayView.prototype.pushData = function(lat, lon, value) {
     this.data.push({"lon":lon, "lat":lat, "v":value});
 }
 
-HeatmapOverlayView.prototype.draw = function() {
+HeatMapOverlayView.prototype.draw = function() {
     this.heatmap.clear();
     if (this.data.length > 0) {
         var proj = this.getProjection();
         for (var i=0, l=this.data.length; i<l; i++) {
             latlon = new google.maps.LatLng(this.data[i].lat, this.data[i].lon);
-            localXY = proj.fromLatLngToContainerPixel(latlon);
+            localXY = proj.fromLatLngToDivPixel(latlon);
             this.heatmap.push(
                     Math.floor(localXY.x), 
                     Math.floor(localXY.y), 
                     this.data[i].v);
         }
 
-        this.heatmap.render(this.step);
+        this.heatmap.render(this.step, this.degree, this.colorscheme);
     }
 }
 

@@ -42,6 +42,14 @@ var HeatMap = function(canvas){
 };
 
 HeatMap.prototype.push = function(x, y, data){
+    // ignore all data out of extent
+    if (x < 0 || x > this.width) {
+        return ;
+    }
+    if (y < 0 || y > this.height) {
+        return;
+    }
+
     var id = x+y*this.width;
     if(this.data[id]){
         this.data[id] = this.data[id] + data;           
@@ -50,8 +58,9 @@ HeatMap.prototype.push = function(x, y, data){
     }
 };
 
-HeatMap.prototype.render = function(step, f_value_color){
+HeatMap.prototype.render = function(step, degree, f_value_color){
     step = step || 1;
+    degree = degree || HeatMap.LINEAR ;
 
     var self = this;
     this.worker.onmessage = function(e){
@@ -67,6 +76,7 @@ HeatMap.prototype.render = function(step, f_value_color){
         'width': self.width,
         'height': self.height,
         'step': step,
+        'degree': degree,
         'value': self.value
     };
     this.worker.postMessage(msg);
@@ -117,4 +127,8 @@ HeatMap.defaultValue2Color = function(value){
     var light = value *60;
     return "hsl("+hue+", 80%, "+light+"%)";
 }
+
+HeatMap.LINEAR = 1;
+HeatMap.QUAD = 2;
+HeatMap.CUBIC = 3;
 
