@@ -39,6 +39,12 @@ The first two optional parameters of *render* define the formula.
 
     v = step * d<sup>degree</sup>
 
+A set of constants are predefined for degree:
+
+* HeatMap.LINEAR
+* HeatMap.QUAD
+* HeatMap.CUBIC
+
 For the third parameter of *render*, you can define a custom
 function to define color of pixels. For instance, we can use a 
 mono-hue color scheme by this function:
@@ -58,4 +64,24 @@ in *heatmap* instance.
 
     heatmap.clear();
 
+GoogleMap extension
+-------------------
 
+HeatMap can be used as an *OverlayView* in GoogleMaps API V3.
+
+Simply use the Map instance to create an *HeatMapOverlayView*    
+
+    var heatmap = new HeatmapOverlayView(map, options);
+
+Additional options available:
+
+* *step*, same as described in HeatMap.render
+* *degree*, same as described in HeatMap.render
+* *colorscheme*, same as described in HeatMap.render
+* *opacity*, the opacity of overlay view, [0,1]
+
+Add data to map:
+
+    heatmap.pushData(latitude, longitude, value);
+
+The map will be rendered automatically.
