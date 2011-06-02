@@ -24,8 +24,8 @@ onmessage = function(e){
                 if(dist > radius){
                     continue;
                 } else {
-                    var v = data - e.data.step * dist;
-                    
+                    var v =data*(1-2*dist/radius-Math.pow(dist/radius,2));      
+       		    v=v<0?0:v;         
                     var id = scanx+scany*e.data.width ;
                 
                     if(value[id]){
