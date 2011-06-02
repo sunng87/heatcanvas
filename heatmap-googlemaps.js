@@ -4,6 +4,7 @@ function HeatmapOverlayView(map, options){
     this.setMap(map);
     this.heatmap = null;
     this.step = options.step || 1;
+    this.degree = options.degree || HeatMap.LINEAR;
     this.opacity = options.opacity || 0.6;
     this.data = [];
 }
@@ -46,7 +47,7 @@ HeatmapOverlayView.prototype.draw = function() {
                     this.data[i].v);
         }
 
-        this.heatmap.render(this.step);
+        this.heatmap.render(this.step, this.degree);
     }
 }
 
