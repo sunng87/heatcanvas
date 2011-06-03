@@ -1,7 +1,7 @@
 Sunng's Simple Heatmap
 ======================
 
-This is a simple heatmap api based on HTML5 canvas.
+This is a simple heatmap api based on HTML5 canvas. A heat map is a graphical representation of data where the values taken by a variable in a two-dimensional table are represented as colors, according to Wikipedia.
 
 You can find an interactive demo at [http://sunng.info/heatmap/](http://sunng.info/heatmap/ "Visit the live demo")
 
