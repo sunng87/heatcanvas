@@ -1,4 +1,4 @@
-Sunng's Simple Heatmap
+HeatCanvas
 ======================
 
 This is a simple heatmap api based on HTML5 canvas. A heat map is a graphical representation of data where the values taken by a variable in a two-dimensional table are represented as colors, according to Wikipedia.
@@ -13,7 +13,7 @@ Usage
 
 You can pass the canvas element object or its id to the constructor:
 
-    var heatmap = new HeatMap("canvasId");
+    var heatmap = new HeatCanvas("canvasId");
 
 ### 2. Add some data ###
 
@@ -71,7 +71,7 @@ HeatMap can be used as an *OverlayView* in GoogleMaps API V3.
 
 Simply use the Map instance to create an *HeatMapOverlayView*    
 
-    var heatmap = new HeatmapOverlayView(map, options);
+    var heatmap = new HeatCanvasOverlayView(map, options);
 
 Additional options available:
 
@@ -85,3 +85,9 @@ Add data to map:
     heatmap.pushData(latitude, longitude, value);
 
 The map will be rendered automatically.
+
+License
+-------
+
+HeatCanvas is released according to MIT License.
+
