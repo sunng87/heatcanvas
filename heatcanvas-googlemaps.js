@@ -13,13 +13,18 @@ function HeatCanvasOverlayView(map, options){
 HeatCanvasOverlayView.prototype = new google.maps.OverlayView();
 
 HeatCanvasOverlayView.prototype.onAdd = function(){
+    var proj = this.getProjection();
+    var sw = proj.fromLatLngToDivPixel(this.getMap().getBounds().getSouthWest());
+    var ne = proj.fromLatLngToDivPixel(this.getMap().getBounds().getNorthEast());
+
     var container = document.createElement("div");
     container.style.cssText = "position:absolute;top:0;left:0;border:0";
     container.style.width = "100%";
     container.style.height = "100%";
     var canvas = document.createElement("canvas");
-    canvas.style.width = this.map.getDiv().style.width;
-    canvas.style.height = this.map.getDiv().style.height;
+
+    canvas.style.width = ne.x-sw.x+"px";
+    canvas.style.height = sw.y-ne.y+"px";
     canvas.width = parseInt(canvas.style.width);
     canvas.height = parseInt(canvas.style.height);
     canvas.style.opacity = this.opacity;
@@ -29,6 +34,7 @@ HeatCanvasOverlayView.prototype.onAdd = function(){
     
     var panes = this.getPanes();
     panes.overlayLayer.appendChild(container);
+    this._div = container;
 }
 
 HeatCanvasOverlayView.prototype.pushData = function(lat, lon, value) {
@@ -36,12 +42,23 @@ HeatCanvasOverlayView.prototype.pushData = function(lat, lon, value) {
 }
 
 HeatCanvasOverlayView.prototype.draw = function() {
+    var proj = this.getProjection();
+    // fit current viewport
+    var sw = proj.fromLatLngToDivPixel(this.getMap().getBounds().getSouthWest());
+    var ne = proj.fromLatLngToDivPixel(this.getMap().getBounds().getNorthEast());
+
+    // Resize the image's DIV to fit the indicated dimensions.
+    var div = this._div;
+    div.style.left = sw.x + 'px';
+    div.style.top = ne.y + 'px';
+    div.style.width = (ne.x - sw.x) + 'px';
+    div.style.height = (sw.y - ne.y) + 'px';
+
     this.heatmap.clear();
     if (this.data.length > 0) {
-        var proj = this.getProjection();
         for (var i=0, l=this.data.length; i<l; i++) {
             latlon = new google.maps.LatLng(this.data[i].lat, this.data[i].lon);
-            localXY = proj.fromLatLngToDivPixel(latlon);
+            localXY = proj.fromLatLngToContainerPixel(latlon);
             this.heatmap.push(
                     Math.floor(localXY.x), 
                     Math.floor(localXY.y), 
