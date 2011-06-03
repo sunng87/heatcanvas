@@ -37,7 +37,7 @@ The first two optional parameters of *render* define the formula.
 * *step* 
 * *degree* 
 
-    v = step * d<sup>degree</sup>
+    v = &Sigma;(data<sub>i</sub> - step * d<sup>degree</sup>)
 
 A set of constants are predefined for degree:
 
