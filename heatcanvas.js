@@ -20,7 +20,7 @@
  * Heatmap api based on canvas
  *
  */
-var HeatMap = function(canvas){
+var HeatCanvas = function(canvas){
     if (typeof(canvas) == "string") {
         this.canvas = document.getElementById(canvas);
     } else {
@@ -30,7 +30,7 @@ var HeatMap = function(canvas){
         return null;
     }
     
-    this.worker = new Worker('heatmap-calc.js');
+    this.worker = new Worker('heatcanvas-worker.js');
     
     this.width = this.canvas.width;
     this.height = this.canvas.height;
@@ -41,7 +41,7 @@ var HeatMap = function(canvas){
     this.data = {};
 };
 
-HeatMap.prototype.push = function(x, y, data){
+HeatCanvas.prototype.push = function(x, y, data){
     // ignore all data out of extent
     if (x < 0 || x > this.width) {
         return ;
@@ -58,9 +58,9 @@ HeatMap.prototype.push = function(x, y, data){
     }
 };
 
-HeatMap.prototype.render = function(step, degree, f_value_color){
+HeatCanvas.prototype.render = function(step, degree, f_value_color){
     step = step || 1;
-    degree = degree || HeatMap.LINEAR ;
+    degree = degree || HeatCanvas.LINEAR ;
 
     var self = this;
     this.worker.onmessage = function(e){
@@ -86,8 +86,8 @@ HeatMap.prototype.render = function(step, degree, f_value_color){
 };
 
 
-HeatMap.prototype._render = function(f_value_color){
-    f_value_color = f_value_color || HeatMap.defaultValue2Color;
+HeatCanvas.prototype._render = function(f_value_color){
+    f_value_color = f_value_color || HeatCanvas.defaultValue2Color;
 
     var ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, this.width, this.height);
@@ -115,20 +115,20 @@ HeatMap.prototype._render = function(f_value_color){
     
 };
 
-HeatMap.prototype.clear = function(){
+HeatCanvas.prototype.clear = function(){
 	this.data = {};
 	this.value = {};
 	
 	this.canvas.getContext("2d").clearRect(0, 0, this.width, this.height);
 };
 
-HeatMap.defaultValue2Color = function(value){
+HeatCanvas.defaultValue2Color = function(value){
     var hue = (1 - value) * 240;
     var light = value *60;
     return "hsl("+hue+", 80%, "+light+"%)";
 }
 
-HeatMap.LINEAR = 1;
-HeatMap.QUAD = 2;
-HeatMap.CUBIC = 3;
+HeatCanvas.LINEAR = 1;
+HeatCanvas.QUAD = 2;
+HeatCanvas.CUBIC = 3;
 

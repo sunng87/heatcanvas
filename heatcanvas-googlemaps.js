@@ -1,18 +1,18 @@
 
-function HeatMapOverlayView(map, options){
+function HeatCanvasOverlayView(map, options){
     options = options || {};
     this.setMap(map);
     this.heatmap = null;
     this.step = options.step || 1;
-    this.degree = options.degree || HeatMap.LINEAR;
+    this.degree = options.degree || HeatCanvas.LINEAR;
     this.opacity = options.opacity || 0.6;
     this.colorscheme = options.colorscheme || null;
     this.data = [];
 }
 
-HeatMapOverlayView.prototype = new google.maps.OverlayView();
+HeatCanvasOverlayView.prototype = new google.maps.OverlayView();
 
-HeatMapOverlayView.prototype.onAdd = function(){
+HeatCanvasOverlayView.prototype.onAdd = function(){
     var container = document.createElement("div");
     container.style.cssText = "position:absolute;top:0;left:0;border:0";
     container.style.width = "100%";
@@ -25,17 +25,17 @@ HeatMapOverlayView.prototype.onAdd = function(){
     canvas.style.opacity = this.opacity;
     container.appendChild(canvas);
 
-    this.heatmap = new HeatMap(canvas);
+    this.heatmap = new HeatCanvas(canvas);
     
     var panes = this.getPanes();
     panes.overlayLayer.appendChild(container);
 }
 
-HeatMapOverlayView.prototype.pushData = function(lat, lon, value) {
+HeatCanvasOverlayView.prototype.pushData = function(lat, lon, value) {
     this.data.push({"lon":lon, "lat":lat, "v":value});
 }
 
-HeatMapOverlayView.prototype.draw = function() {
+HeatCanvasOverlayView.prototype.draw = function() {
     this.heatmap.clear();
     if (this.data.length > 0) {
         var proj = this.getProjection();
