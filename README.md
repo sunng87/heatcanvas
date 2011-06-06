@@ -86,6 +86,27 @@ Add data to map:
 
 The map will be rendered automatically.
 
+OpenLayers extension
+--------------------
+
+Also we have a OpenLayer extension for you to embed heat map in your custom
+map application and OpenStreetMap.
+
+The usage is still similar to GoogleMaps. First, construct your heat map
+layer with a *name*, *OpenLayers map instance*, *layer options* and
+*HeatCanvas options*:
+
+    var heatmap = new OpenLayers.Layer.HeatCanvas("HeatCanvas", map, {},
+            {'step':0.3, 'degree':HeatCanvas.QUAD, 'opacity':0.8});
+
+Add data to layer:
+
+    heatmap.pushData(latitude, longitude, value);
+
+Add layer to map:
+
+    map.addLayer(heatmap);
+
 License
 -------
 
