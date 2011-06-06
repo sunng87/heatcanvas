@@ -26,10 +26,13 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
     heatmap: null,
     data: [],
 
-    initialize: function(name, options, heatCanvasOptions){
+    initialize: function(name, map, options, heatCanvasOptions){
         OpenLayers.Layer.prototype.initialize.apply(this, [name, options]);
         
+        this.setMap(map);
         this.heatCanvasOptions = heatCanvasOptions;
+        this.initHeatCanvas(this.map, this.heatCanvasOptions);
+        map.events.register("moveend", this, this.redraw);
     },
 
     initHeatCanvas: function(map, options){
@@ -41,31 +44,42 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
 
         var container = document.createElement("div");
         container.style.cssText = "position:absolute;top:0;left:0;border:0";
-        container.style.width = map.size.w+"px";
-        container.style.height = map.size.h+"px";
+        container.style.width = this.map.size.w+"px";
+        container.style.height = this.map.size.h+"px";
         var canvas = document.createElement("canvas");
 
-        canvas.style.width = map.size.w+"px";
-        canvas.style.height = map.size.h+"px";
+        canvas.style.width = this.map.size.w+"px";
+        canvas.style.height = this.map.size.h+"px";
         canvas.width = parseInt(canvas.style.width);
         canvas.height = parseInt(canvas.style.height);
         canvas.style.opacity = this._opacity;
         container.appendChild(canvas);
 
         this.heatmap = new HeatCanvas(canvas);
+        this.div.appendChild(container);
+        this._div = container;
     },
 
     pushData: function(lat, lon, value) {
         this.data.push({"lon":lon, "lat":lat, "v":value});
     },
+    
+    _resetCanvasPosition: function() {
+        var extent = this.map.getExtent();
+        var nw = new OpenLayers.LonLat(extent.left, extent.top);
+        var localXY = this.map.getLayerPxFromLonLat(nw);
+        this._div.style.top = localXY.y + "px";
+        this._div.style.left = localXY.x + "px";
+    },
 
     // override
     redraw: function() {
-        console.log('about to redraw');
+        this._resetCanvasPosition();
         this.heatmap.clear();
         if (this.data.length > 0) {
             for (var i=0, l=this.data.length; i<l; i++) {
                 var lonlat = new OpenLayers.LonLat(this.data[i].lon, this.data[i].lat);
+                lonlat = lonlat.transform(map.displayProjection, map.getProjectionObject())
                 var localXY = this.map.getViewPortPxFromLonLat(lonlat);
                 this.heatmap.push(
                         Math.floor(localXY.x), 
@@ -74,15 +88,11 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
             }
 
             this.heatmap.render(this._step, this._degree, this._colorscheme);
-            console.log('rendered');
         }
-    }
+    },
 
     // override
     afterAdd: function() {
-        console.log('after add')
-        this.initHeatCanvas(this.map, this.heatCanvasOptions);
-        console.log('heatcanvas initialized')
     },
 
     CLASS_NAME: "OpenLayers.Layer.HeatCanvas"
