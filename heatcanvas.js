@@ -1,26 +1,30 @@
 /**
- * 
  * Copyright 2010 Sun Ning <classicning@gmail.com>
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at 
  *
- *   http://www.apache.org/licenses/LICENSE-2.0 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
- * See the License for the specific language governing permissions 
- * and limitations under the License. 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
  *
- *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 /**
  * Heatmap api based on canvas
  *
  */
-var HeatMap = function(canvas){
+var HeatCanvas = function(canvas){
     if (typeof(canvas) == "string") {
         this.canvas = document.getElementById(canvas);
     } else {
@@ -30,7 +34,7 @@ var HeatMap = function(canvas){
         return null;
     }
     
-    this.worker = new Worker('heatmap-calc.js');
+    this.worker = new Worker('heatcanvas-worker.js');
     
     this.width = this.canvas.width;
     this.height = this.canvas.height;
@@ -41,7 +45,7 @@ var HeatMap = function(canvas){
     this.data = {};
 };
 
-HeatMap.prototype.push = function(x, y, data){
+HeatCanvas.prototype.push = function(x, y, data){
     // ignore all data out of extent
     if (x < 0 || x > this.width) {
         return ;
@@ -58,9 +62,9 @@ HeatMap.prototype.push = function(x, y, data){
     }
 };
 
-HeatMap.prototype.render = function(step, degree, f_value_color){
+HeatCanvas.prototype.render = function(step, degree, f_value_color){
     step = step || 1;
-    degree = degree || HeatMap.LINEAR ;
+    degree = degree || HeatCanvas.LINEAR ;
 
     var self = this;
     this.worker.onmessage = function(e){
@@ -86,8 +90,8 @@ HeatMap.prototype.render = function(step, degree, f_value_color){
 };
 
 
-HeatMap.prototype._render = function(f_value_color){
-    f_value_color = f_value_color || HeatMap.defaultValue2Color;
+HeatCanvas.prototype._render = function(f_value_color){
+    f_value_color = f_value_color || HeatCanvas.defaultValue2Color;
 
     var ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, this.width, this.height);
@@ -115,20 +119,20 @@ HeatMap.prototype._render = function(f_value_color){
     
 };
 
-HeatMap.prototype.clear = function(){
+HeatCanvas.prototype.clear = function(){
 	this.data = {};
 	this.value = {};
 	
 	this.canvas.getContext("2d").clearRect(0, 0, this.width, this.height);
 };
 
-HeatMap.defaultValue2Color = function(value){
+HeatCanvas.defaultValue2Color = function(value){
     var hue = (1 - value) * 240;
     var light = value *60;
     return "hsl("+hue+", 80%, "+light+"%)";
 }
 
-HeatMap.LINEAR = 1;
-HeatMap.QUAD = 2;
-HeatMap.CUBIC = 3;
+HeatCanvas.LINEAR = 1;
+HeatCanvas.QUAD = 2;
+HeatCanvas.CUBIC = 3;
 
