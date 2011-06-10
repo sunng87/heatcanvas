@@ -29,6 +29,8 @@ function HeatCanvasOverlayView(map, options){
     this.opacity = options.opacity || 0.6;
     this.colorscheme = options.colorscheme || null;
     this.data = [];
+    var self=this;
+    google.maps.event.addListener(self.map,'dragend',function(){self.draw();});
 }
 
 HeatCanvasOverlayView.prototype = new google.maps.OverlayView();
