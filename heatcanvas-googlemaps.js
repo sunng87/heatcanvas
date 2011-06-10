@@ -31,6 +31,7 @@ function HeatCanvasOverlayView(map, options){
     this.data = [];
     var self=this;
     google.maps.event.addListener(self.map,'dragend',function(){self.draw();});
+    google.maps.event.addListener(self.map,'dblclick',function(){self.draw();});
 }
 
 HeatCanvasOverlayView.prototype = new google.maps.OverlayView();
