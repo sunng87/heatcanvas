@@ -112,3 +112,7 @@ License
 
 HeatCanvas is released according to MIT License.
 
+Thanks
+------
+
+* @lbt05 for his patches on GoogleMap extension
