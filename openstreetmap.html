@@ -24,7 +24,7 @@
                   ],
                   maxExtent: new OpenLayers.Bounds(-20037508.34,-20037508.34,
                                                    20037508.34,20037508.34),
-                  numZoomLevels: 20,
+                  numZoomLevels: 12,
                   maxResolution: 156543.0339,
                   displayProjection: new OpenLayers.Projection("EPSG:4326"),
                   units: 'm',
@@ -38,9 +38,10 @@
                 map.addLayer(mapnik);
                 map.setBaseLayer(mapnik);
 
-                var bounds = OpenLayers.Bounds.fromArray([70.4,15.2,136.2,53.7])
-                        .transform(map.displayProjection, map.getProjectionObject());
-                map.zoomToExtent(bounds);
+                //var bounds = OpenLayers.Bounds.fromArray([70.4,15.2,136.2,53.7])
+                //        .transform(map.displayProjection, map.getProjectionObject());
+                //map.zoomToExtent(bounds);
+                map.setCenter(new OpenLayers.LonLat(-20,0).transform(map.displayProjection, map.getProjectionObject()), 2);
 
                 var size = map.getSize();
                 if (size.h > 320) {
@@ -62,6 +63,8 @@
     </head>
 
     <body onload="init();">
-        <div id="map" style="width:700px; height:500px;"></div>
+        <div id="map" style="width:850px; height:500px;"></div>
+        <div>This is the heat map represents visitor distribution of my blog on June 3 and June 4. It's based on my heat map library <a href="http://github.com/sunng87/heatcanvas/"><em>Heat Canvas</em></a> OpenLayers extension. You can zoom in to see local detail. 
+            <a href="http://sunng.info/blog/2011/06/openlayers-extension-for-heatcanvas/">Here is my blog post</a> describes the usage. You can also get involved by ctrl+u.</div>
     </body>
 </html>
