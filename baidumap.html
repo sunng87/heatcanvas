@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf8" />
+        <title>Google Heatmap</title>
+
+        <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.2"></script>
+        <script type="text/javascript" src="heatcanvas.js"></script>
+        <script type="text/javascript" src="heatcanvas-baidumap.js"></script>
+
+        <style type="text/css">
+            #map{
+            }
+        </style>
+
+        <script type="text/javascript">
+            function init() {
+                var point = new BMap.Point(116,39);
+                var map = new BMap.Map(document.getElementById("map"));
+                map.centerAndZoom(point, 6);
+
+                var heatmap = new HeatCanvasBaiduLayer(map, {'step':0.5, 'degree':HeatCanvas.LINEAR, 'opacity':0.7});
+                var data=[[116,39,20],[121.503594,31.234136,33],[118.891178,32.115234,12]];
+                for(var i=0,l=data.length; i<l; i++) {
+                  heatmap.pushData(data[i][0], data[i][1], data[i][2]);
+                }
+                map.addOverlay(heatmap);
+            }
+        </script>
+    </head>
+
+    <body onload="init();">
+        <div id="map" style="width:700px; height:500px;"></div>
+    </body>
+</html>
