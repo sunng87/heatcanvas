@@ -34,7 +34,6 @@ HeatCanvasBaiduLayer.prototype.initialize = function(map) {
      var panes = this._map.getPanes();
      panes.markerPane.appendChild(container);
      this._div = container;
-     this.draw();
 }
 
 HeatCanvasBaiduLayer.prototype.pushData = function (lat, lon,value) {
