@@ -107,6 +107,17 @@ Add layer to map:
 
     map.addLayer(heatmap);
 
+Other extensions
+----------------
+
+There are also HeatCanvas extensions for:
+
+* Baidu Map ([demo](http://sunng87.github.com/heatcanvas/baidumap.html "BaiduMap Demo"))
+* Cloudmade Leaflet ([demo](http://sunng87.github.com/heatcanvas/leaflet.html "Leaflet Demo"))
+
+These extensions share similar API mentioned above. You can browse the source
+code of our demos to get detail.
+
 License
 -------
 
@@ -115,4 +126,6 @@ HeatCanvas is released according to MIT License.
 Thanks
 ------
 
-* @lbt05 for his patches on GoogleMap extension
+* @lbt05 for his patches on GoogleMap extension and BaiduMap implementation 
+
+
