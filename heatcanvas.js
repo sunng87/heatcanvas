@@ -118,7 +118,7 @@ HeatCanvas.prototype._render = function(f_value_color){
         
         var color = f_value_color(this.value[pos] / maxValue);
         canvasData.data[pixelColorIndex] = color[0]; //r
-        canavsData.data[pixelColorIndex+1] = color[1]; //g
+        canvasData.data[pixelColorIndex+1] = color[1]; //g
         canvasData.data[pixelColorIndex+2] = color[2]; //b
         canvasData.data[pixelColorIndex+3] = color[3]; //a
     }
