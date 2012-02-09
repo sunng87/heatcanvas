@@ -101,6 +101,9 @@ HeatCanvas.prototype._render = function(f_value_color){
     ctx.fillRect(0, 0, this.width, this.height);
 
     var canvasData = ctx.createImageData(this.width, this.height);
+    for (var i=0; i<canvasData.data.length; i+=4){
+        canvasData.data[i] = 0; // transparentize all pixels
+    }
     
     // maximum 
     var maxValue = 0;
