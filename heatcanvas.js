@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 Sun Ning <classicning@gmail.com>
+ * Copyright 2010-2011 Sun Ning <classicning@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -99,6 +99,8 @@ HeatCanvas.prototype._render = function(f_value_color){
     // reader background as black
     ctx.fillStyle = this.bgcolor || "rgb(0,0,0)";
     ctx.fillRect(0, 0, this.width, this.height);
+
+    var canvasData = ctx.createImageData(this.width, this.height);
     
     // maximum 
     var maxValue = 0;
@@ -109,13 +111,19 @@ HeatCanvas.prototype._render = function(f_value_color){
     for(var pos in this.value){
         var x = Math.floor(pos%this.width);
         var y = Math.floor(pos/this.width);
+
+        // MDC ImageData:
+        // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
+        var pixelColorIndex = y*this.width*4+x*4;
         
         var color = f_value_color(this.value[pos] / maxValue);
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, 1, 1);
-            
-        
+        canvasData.data[pixelColorIndex] = color[0]; //r
+        canavsData.data[pixelColorIndex+1] = color[1]; //g
+        canvasData.data[pixelColorIndex+2] = color[2]; //b
+        canvasData.data[pixelColorIndex+3] = color[3]; //a
     }
+
+    ctx.putImageData(canvasData, 0, 0);
     
 };
 
@@ -127,9 +135,38 @@ HeatCanvas.prototype.clear = function(){
 };
 
 HeatCanvas.defaultValue2Color = function(value){
-    var hue = (1 - value) * 240;
-    var light = value *60;
-    return "hsl("+hue+", 80%, "+light+"%)";
+    var h = (1 - value);
+    var l = value * 0.4;
+    var s = 0.8;
+    var a = 1;
+    return hsla2rgba(h, s, l, a);
+}
+
+// function copied from:
+// http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+HeatCanvas.hsla2rgba = function(h, s, l, a){
+    var r, g, b;
+
+    if(s == 0){
+        r = g = b = l;
+    }else{
+        function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    return [r * 255, g * 255, b * 255, a * 255];
 }
 
 HeatCanvas.LINEAR = 1;
