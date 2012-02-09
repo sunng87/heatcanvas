@@ -95,13 +95,14 @@ HeatCanvas.prototype._render = function(f_value_color){
 
     var ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, this.width, this.height);
-    
+
+    defaultColor = this.bgcolor || [0, 0, 0, 255];
     var canvasData = ctx.createImageData(this.width, this.height);
     for (var i=0; i<canvasData.data.length; i+=4){
-        canvasData.data[i] = this.bgcolor[0]; // r
-        canvasData.data[i+1] = this.bgcolor[1];
-        canvasData.data[i+2] = this.bgcolor[2];
-        canvasData.data[i+3] = this.bgcolor[3];
+        canvasData.data[i] = defaultColor[0]; // r
+        canvasData.data[i+1] = defaultColor[1];
+        canvasData.data[i+2] = defaultColor[2];
+        canvasData.data[i+3] = defaultColor[3];
     }
     
     // maximum 
