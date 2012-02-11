@@ -119,7 +119,7 @@ HeatCanvas.prototype._render = function(f_value_color){
         // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
         var pixelColorIndex = y*this.width*4+x*4;
         
-        var color = HeatCanvas.hsla2rgba.call(
+        var color = HeatCanvas.hsla2rgba.apply(
           null, f_value_color(this.value[pos] / maxValue));
         canvasData.data[pixelColorIndex] = color[0]; //r
         canvasData.data[pixelColorIndex+1] = color[1]; //g
