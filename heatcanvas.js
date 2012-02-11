@@ -119,12 +119,13 @@ HeatCanvas.prototype._render = function(f_value_color){
         // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
         var pixelColorIndex = y*this.width*4+x*4;
         
-        var color = f_value_color(this.value[pos] / maxValue);
+        var color = HeatCanvas.hsla2rgba.call(
+          null, f_value_color(this.value[pos] / maxValue));
         canvasData.data[pixelColorIndex] = color[0]; //r
         canvasData.data[pixelColorIndex+1] = color[1]; //g
         canvasData.data[pixelColorIndex+2] = color[2]; //b
         canvasData.data[pixelColorIndex+3] = color[3]; //a
-    }
+        }
 
     ctx.putImageData(canvasData, 0, 0);
     
@@ -142,7 +143,7 @@ HeatCanvas.defaultValue2Color = function(value){
     var l = value * 0.6;
     var s = 0.8;
     var a = 1;
-    return HeatCanvas.hsla2rgba(h, s, l, a);
+    return [h, s, l, a];
 }
 
 // function copied from:
