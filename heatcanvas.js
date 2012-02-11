@@ -139,7 +139,7 @@ HeatCanvas.prototype.clear = function(){
 
 HeatCanvas.defaultValue2Color = function(value){
     var h = (1 - value);
-    var l = value * 0.4;
+    var l = value * 0.6;
     var s = 0.8;
     var a = 1;
     return HeatCanvas.hsla2rgba(h, s, l, a);
