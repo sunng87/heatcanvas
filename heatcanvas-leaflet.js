@@ -22,18 +22,18 @@
 
 L.TileLayer.HeatCanvas = L.Class.extend({
 
-    initialize: function(options, heatCanvasOptions){
+    initialize: function(heatCanvasOptions){
         this.heatCanvasOptions = heatCanvasOptions;
-        map.on("viewreset", this._redraw, this);
-        map.on("moveend", this._redraw, this);
-        map.on("dragend", this._redraw, this);
-        map.on("zoomend", this._redraw, this);
         this.data= [];
     },
 
     onAdd: function(map) {
         this.map = map;
         this._initHeatCanvas(this.map, this.heatCanvasOptions);
+        map.on("viewreset", this._redraw, this);
+        map.on("moveend", this._redraw, this);
+        map.on("dragend", this._redraw, this);
+        map.on("zoomend", this._redraw, this);
         this._redraw();
     },
 
