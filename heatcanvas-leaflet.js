@@ -22,7 +22,7 @@
 
 L.TileLayer.HeatCanvas = L.Class.extend({
 
-    initialize: function(heatCanvasOptions){
+    initialize: function(options, heatCanvasOptions){
         this.heatCanvasOptions = heatCanvasOptions;
         this.data= [];
     },
