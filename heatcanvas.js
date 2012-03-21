@@ -34,7 +34,7 @@ var HeatCanvas = function(canvas){
         return null;
     }
     
-    this.worker = new Worker('heatcanvas-worker.js');
+    this.worker = new Worker(HeatCanvas.getPath()+'heatcanvas-worker.js');
     
     this.width = this.canvas.width;
     this.height = this.canvas.height;
@@ -176,4 +176,16 @@ HeatCanvas.hsla2rgba = function(h, s, l, a){
 HeatCanvas.LINEAR = 1;
 HeatCanvas.QUAD = 2;
 HeatCanvas.CUBIC = 3;
+
+HeatCanvas.getPath = function() {
+    var scriptTags = document.getElementsByTagName("script");
+    for (var i=0; i<scriptTags.length; i++) {
+        var src = scriptTags[i].src;
+        var pos = src.indexOf("heatcanvas.js");
+        if (pos > 0) {
+            return src.substring(0, pos);
+        }
+    }
+    return "";
+}
 
