@@ -127,5 +127,5 @@ Thanks
 ------
 
 * @lbt05 for his patches on GoogleMap extension and BaiduMap implementation 
-
+* @dazuma for his suggestion to speed up canvas rendering.
 
