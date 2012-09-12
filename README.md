@@ -50,8 +50,7 @@ function to define color of pixels. For instance, we can use a
 mono-hue color scheme by this function:
 
     var colorscheme = function(value){
-        var light = value * 100;
-        return "hsl(20, 75%, "+light+"%)";
+        return [0.3, 0.75, value, 1];
     }
     heatmap.render(null, null, colorscheme);
 
