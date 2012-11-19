@@ -132,10 +132,14 @@ HeatCanvas.prototype._render = function(f_value_color){
 };
 
 HeatCanvas.prototype.clear = function(){
-	this.data = {};
-	this.value = {};
+    this.data = {};
+    this.value = {};
 	
-	this.canvas.getContext("2d").clearRect(0, 0, this.width, this.height);
+    this.canvas.getContext("2d").clearRect(0, 0, this.width, this.height);
+};
+
+HeatCanvas.prototype.exportImage = function() {
+    return this.canvas.toDataURL();
 };
 
 HeatCanvas.defaultValue2Color = function(value){
