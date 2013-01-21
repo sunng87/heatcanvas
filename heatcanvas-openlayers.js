@@ -75,7 +75,7 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
     // override
     redraw: function() {
         this._resetCanvasPosition();
-        this.heatmap.clear();
+        this.clear();
         if (this.data.length > 0) {
             for (var i=0, l=this.data.length; i<l; i++) {
                 var lonlat = new OpenLayers.LonLat(this.data[i].lon, this.data[i].lat);
