@@ -90,6 +90,11 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
             this.heatmap.render(this._step, this._degree, this._colorscheme);
         }
     },
+    
+    clear: function() {
+        this.heatmap.clear();
+        this.data = [];
+    }
 
     // override
     afterAdd: function() {
