@@ -45,6 +45,14 @@ var HeatCanvas = function(canvas){
     this.data = {};
 };
 
+HeatCanvas.prototype.resize = function( w, h ) {
+  this.width = this.canvas.width = w;
+  this.height = this.canvas.height = h;
+
+  this.canvas.style.width = w + 'px';
+  this.canvas.style.height = h + 'px';
+};
+
 HeatCanvas.prototype.push = function(x, y, data){
     // ignore all data out of extent
     if (x < 0 || x > this.width) {
