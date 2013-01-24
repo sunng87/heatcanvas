@@ -59,6 +59,11 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
         this.div.appendChild(container);
         this._div = container;
     },
+    
+    onMapResize: function() {
+        var size = this.map.getSize();
+        this.heatmap.resize( size.w, size.h );
+    },
 
     pushData: function(lat, lon, value) {
         this.data.push({"lon":lon, "lat":lat, "v":value});
@@ -79,7 +84,7 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
         if (this.data.length > 0) {
             for (var i=0, l=this.data.length; i<l; i++) {
                 var lonlat = new OpenLayers.LonLat(this.data[i].lon, this.data[i].lat);
-                lonlat = lonlat.transform(map.displayProjection, map.getProjectionObject())
+                lonlat = lonlat.transform(this.map.displayProjection, this.map.getProjectionObject())
                 var localXY = this.map.getViewPortPxFromLonLat(lonlat);
                 this.heatmap.push(
                         Math.floor(localXY.x), 
