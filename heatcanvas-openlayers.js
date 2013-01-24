@@ -59,6 +59,11 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
         this.div.appendChild(container);
         this._div = container;
     },
+    
+    onMapResize: function() {
+        var size = this.map.getSize();
+        this.heatmap.resize( size.w, size.h );
+    },
 
     pushData: function(lat, lon, value) {
         this.data.push({"lon":lon, "lat":lat, "v":value});
