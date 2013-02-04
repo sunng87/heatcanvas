@@ -25,6 +25,16 @@ L.TileLayer.HeatCanvas = L.Class.extend({
     initialize: function(options, heatCanvasOptions){
         this.heatCanvasOptions = heatCanvasOptions;
         this.data= [];
+        this._onRenderingStart = null;
+        this._onRenderingEnd = null;
+    },
+
+    onRenderingStart: function(cb){
+        this._onRenderingStart = cb;
+    },
+
+    onRenderingEnd: function(cb) {
+        this._onRenderingEnd = cb;
     },
 
     onAdd: function(map) {
@@ -66,6 +76,8 @@ L.TileLayer.HeatCanvas = L.Class.extend({
         container.appendChild(canv);
 
         this.heatmap = new HeatCanvas(canv);
+        this.heatmap.onRenderingStart = this._onRenderingStart;
+        this.heatmap.onRenderingEnd = this._onRenderingEnd;
         this._div = container;
         this.map.getPanes().overlayPane.appendChild(this._div);
     },

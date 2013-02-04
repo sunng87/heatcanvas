@@ -1,0 +1,13 @@
+{
+  "name": "heatcanvas",
+  "version": "1.2.1",
+  "main": [
+    "heatcanvas.js",
+    "heatcanvas-worker.js",
+    "heatcanvas-baidumap.js",
+    "heatcanvas-leaflet.js",
+    "heatcanvas-googlemaps.js",
+    "heatcanvas-openlayers.js"
+  ],
+  "dependencies": {}
+}
