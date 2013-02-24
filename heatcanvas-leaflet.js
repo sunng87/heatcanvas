@@ -111,6 +111,14 @@ L.TileLayer.HeatCanvas = L.Class.extend({
             this.heatmap.render(this._step, this._degree, this._colorscheme);
         }
         return this;
+    },
+
+    clear: function(){
+        this.heatmap.clear();
+    },
+
+    redraw: function(){
+        this._redraw();
     }
 
 });
