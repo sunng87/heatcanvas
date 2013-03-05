@@ -40,19 +40,13 @@ L.TileLayer.HeatCanvas = L.Class.extend({
     onAdd: function(map) {
         this.map = map;
         this._initHeatCanvas(this.map, this.heatCanvasOptions);
-        map.on("viewreset", this._redraw, this);
         map.on("moveend", this._redraw, this);
-        map.on("dragend", this._redraw, this);
-        map.on("zoomend", this._redraw, this);
         this._redraw();
     },
 
     onRemove: function(map) {
         map.getPanes().overlayPane.removeChild(this._div);
-        map.off("viewreset", this._redraw, this);
         map.off("moveend", this._redraw, this);
-        map.off("dragend", this._redraw, this);
-        map.off("zoomend", this._redraw, this);
     },
 
     _initHeatCanvas: function(map, options){
@@ -68,10 +62,10 @@ L.TileLayer.HeatCanvas = L.Class.extend({
         container.style.height = this.map.getSize().y+"px";
 
         var canv = document.createElement("canvas");
-        canv.style.width = this.map.getSize().x+"px";
-        canv.style.height = this.map.getSize().y+"px";
-        canv.width = parseInt(canv.style.width);
-        canv.height = parseInt(canv.style.height);
+        canv.width = this.map.getSize().x;
+        canv.height = this.map.getSize().y;
+        canv.style.width = canv.width+"px";
+        canv.style.height = canv.height+"px";
         canv.style.opacity = this._opacity;
         container.appendChild(canv);
 
@@ -83,14 +77,12 @@ L.TileLayer.HeatCanvas = L.Class.extend({
     },
 
     pushData: function(lat, lon, value) {
-        this.data.push({"lon":lon, "lat":lat, "v":value});
+        this.data.push({"lat":lat, "lon":lon, "v":value});
     },
     
     _resetCanvasPosition: function() {
         var bounds = this.map.getBounds();
         var topLeft = this.map.latLngToLayerPoint(bounds.getNorthWest());
-        //topLeft = this.map.layerPointToContainerPoint(topLeft);
-
         L.DomUtil.setPosition(this._div, topLeft);
     },
 
@@ -122,3 +114,8 @@ L.TileLayer.HeatCanvas = L.Class.extend({
     }
 
 });
+
+L.TileLayer.heatcanvas = function (options) {
+    return new L.TileLayer.HeatCanvas(options);
+};
+}
