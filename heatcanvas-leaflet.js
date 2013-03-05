@@ -107,6 +107,7 @@ L.TileLayer.HeatCanvas = L.Class.extend({
 
     clear: function(){
         this.heatmap.clear();
+		this.data = [];
     },
 
     redraw: function(){
