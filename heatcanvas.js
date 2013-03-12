@@ -193,11 +193,11 @@ HeatCanvas.getPath = function() {
     var scriptTags = document.getElementsByTagName("script");
     for (var i=0; i<scriptTags.length; i++) {
         var src = scriptTags[i].src;
-        var pos = src.indexOf("heatcanvas.js");
+        var match = src.match(/heatcanvas(-[a-z0-9]{32})?\.js/);
+        var pos = match ? match.index : 0;
         if (pos > 0) {
             return src.substring(0, pos);
         }
     }
     return "";
 }
-
