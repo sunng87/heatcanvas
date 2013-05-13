@@ -1,5 +1,5 @@
 /**
- * Copyright 2011 Ni Huajie <lbt05@gmail.com>
+ * Copyright 2013 Codefor <hk.yuhe@gmail.com>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -66,7 +66,7 @@ HeatCanvas51Layer.prototype.getObject = function(){
 }
 
 HeatCanvas51Layer.prototype.reDraw = function(){
-        return this.draw()
+    return this.draw()
 }
 
 HeatCanvas51Layer.prototype.draw = function() {
@@ -74,7 +74,6 @@ HeatCanvas51Layer.prototype.draw = function() {
     a = this._map.getViewSize();
     var size = {width:a[0],height:a[1]}
 
-    //相对于左上角0，0	
     var bounds = this._map.getBoundsLatLng();
     sw = this._map.getOverLayPosition(new LTPoint(bounds.getXmin(),bounds.getYmin()));
     ne = this._map.getOverLayPosition(new LTPoint(bounds.getXmax(),bounds.getYmax()));
