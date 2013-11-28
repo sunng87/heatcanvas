@@ -119,4 +119,3 @@ L.TileLayer.HeatCanvas = L.Class.extend({
 L.TileLayer.heatcanvas = function (options) {
     return new L.TileLayer.HeatCanvas(options);
 };
-}
