@@ -72,6 +72,7 @@ L.TileLayer.HeatCanvas = L.Class.extend({
         this.heatmap = new HeatCanvas(canv);
         this.heatmap.onRenderingStart = this._onRenderingStart;
         this.heatmap.onRenderingEnd = this._onRenderingEnd;
+        this.heatmap.bgcolor = options.bgcolor || null;
         this._div = container;
         this.map.getPanes().overlayPane.appendChild(this._div);
     },
