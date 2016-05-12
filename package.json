@@ -1,0 +1,17 @@
+{
+  "name": "heatcanvas",
+  "version": "1.2.3",
+  "description": "Simple heatmap api based on HTML5 canvas.",
+  "author": "Ning Sun",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sunng87/heatcanvas.git"
+  },
+  "keywords": [
+    "heat",
+    "map",
+    "canvas"
+  ],
+  "homepage": "https://sunng87.github.io/heatcanvas"
+}
