@@ -80,7 +80,7 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
     // override
     redraw: function() {
         this._resetCanvasPosition();
-        this.heatmap.clear();
+        this.clear();
         if (this.data.length > 0) {
             for (var i=0, l=this.data.length; i<l; i++) {
                 var lonlat = new OpenLayers.LonLat(this.data[i].lon, this.data[i].lat);
@@ -95,6 +95,11 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
             this.heatmap.render(this._step, this._degree, this._colorscheme);
         }
     },
+    
+    clear: function() {
+        this.heatmap.clear();
+        this.data = [];
+    }
 
     // override
     afterAdd: function() {
