@@ -21,6 +21,8 @@
  * SOFTWARE.
  */
 
+var HeatCanvas = require("./heatcanvas");
+
 export default function HeatCanvasOverlayView(map, options){
     options = options || {};
     this.setMap(map);

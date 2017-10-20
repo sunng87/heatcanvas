@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+var HeatCanvas = require("./heatcanvas");
+
 OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
 
     isBaseLayer: false,

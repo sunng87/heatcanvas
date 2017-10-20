@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+var HeatCanvas = require("./heatcanvas");
+
 export default function HeatCanvasBaiduLayer(map,options){
     options = options || {};
     this._map = map;
@@ -32,7 +34,7 @@ export default function HeatCanvasBaiduLayer(map,options){
     var self = this;
     this._map.addEventListener('dragend',function(){self.draw();});
     this._map.addEventListener('dbclick',function(){self.draw();});
-    }
+}
 
 HeatCanvasBaiduLayer.prototype= new BMap.Overlay();
 
