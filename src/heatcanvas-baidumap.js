@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-function HeatCanvasBaiduLayer(map,options){
+export default function HeatCanvasBaiduLayer(map,options){
     options = options || {};
     this._map = map;
     this.heatmap = null;
@@ -84,4 +84,3 @@ HeatCanvasBaiduLayer.prototype.draw = function() {
         }
         this.heatmap.render(this.step, this.degree, this.colorscheme);
     }
-

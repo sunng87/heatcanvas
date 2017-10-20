@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-function HeatCanvasOverlayView(map, options){
+export default function HeatCanvasOverlayView(map, options){
     options = options || {};
     this.setMap(map);
     this.heatmap = null;
@@ -93,4 +93,3 @@ HeatCanvasOverlayView.prototype.draw = function() {
         this.heatmap.render(this.step, this.degree, this.colorscheme);
     }
 }
-

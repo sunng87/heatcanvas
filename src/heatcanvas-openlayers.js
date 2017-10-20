@@ -102,3 +102,5 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
 
     CLASS_NAME: "OpenLayers.Layer.HeatCanvas"
 });
+
+export default OpenLayers.Layer.HeatCanvas;
