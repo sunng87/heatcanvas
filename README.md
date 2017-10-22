@@ -25,7 +25,7 @@ You can pass the canvas element object or its id to the constructor:
 
 Add *value* to point (*x*,*y*) in canvas coordinate system.
 
-    heatmap.add(x, y, value);
+    heatmap.push(x, y, value);
 
 ### 3. Render the map ###
 
@@ -133,4 +133,3 @@ Thanks
 
 * @lbt05 for his patches on GoogleMap extension and BaiduMap implementation 
 * @dazuma for his suggestion to speed up canvas rendering.
-
