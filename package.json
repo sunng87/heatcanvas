@@ -13,5 +13,8 @@
     "map",
     "canvas"
   ],
-  "homepage": "https://sunng87.github.io/heatcanvas"
+  "homepage": "https://sunng87.github.io/heatcanvas",
+  "devDependencies": {
+    "webpack": "^3.8.1"
+  }
 }

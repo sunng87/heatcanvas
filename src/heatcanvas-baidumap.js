@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 
-function HeatCanvasBaiduLayer(map,options){
+var HeatCanvas = require("./heatcanvas");
+
+export default function HeatCanvasBaiduLayer(map,options){
     options = options || {};
     this._map = map;
     this.heatmap = null;
@@ -32,7 +34,7 @@ function HeatCanvasBaiduLayer(map,options){
     var self = this;
     this._map.addEventListener('dragend',function(){self.draw();});
     this._map.addEventListener('dbclick',function(){self.draw();});
-    }
+}
 
 HeatCanvasBaiduLayer.prototype= new BMap.Overlay();
 
@@ -84,4 +86,3 @@ HeatCanvasBaiduLayer.prototype.draw = function() {
         }
         this.heatmap.render(this.step, this.degree, this.colorscheme);
     }
-

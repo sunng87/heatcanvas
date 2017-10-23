@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+var HeatCanvas = require("./heatcanvas");
+
 L.TileLayer.HeatCanvas = L.Class.extend({
 
     initialize: function(options, heatCanvasOptions){
@@ -120,3 +122,5 @@ L.TileLayer.HeatCanvas = L.Class.extend({
 L.TileLayer.heatcanvas = function (options) {
     return new L.TileLayer.HeatCanvas(options);
 };
+
+export default L.TitleLayer.heatcanvas;
