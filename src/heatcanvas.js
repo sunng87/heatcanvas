@@ -128,16 +128,18 @@ HeatCanvas.prototype.exportImage = function() {
     return this.canvas.toDataURL();
 };
 
+const defaultValue2ColorResult = new Float64Array(4);
+defaultValue2ColorResult[1] = 0.8;// s
+defaultValue2ColorResult[3] = 1.0;// a
 HeatCanvas.defaultValue2Color = function(value){
-    var h = (1 - value);
-    var l = value * 0.6;
-    var s = 0.8;
-    var a = 1;
-    return [h, s, l, a];
+    defaultValue2ColorResult[0] = (1 - value);// h
+    defaultValue2ColorResult[2] = value * 0.6;// l
+    return defaultValue2ColorResult;
 }
 
 // function copied from:
 // http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+const hsla2rgbaResult = new Uint8ClampedArray(4);
 HeatCanvas.hsla2rgba = function(h, s, l, a){
     var r, g, b;
 
@@ -160,7 +162,11 @@ HeatCanvas.hsla2rgba = function(h, s, l, a){
         b = hue2rgb(p, q, h - 1/3);
     }
 
-    return [r * 255, g * 255, b * 255, a * 255];
+    hsla2rgbaResult[0] = r * 255;
+    hsla2rgbaResult[1] = g * 255;
+    hsla2rgbaResult[2] = b * 255;
+    hsla2rgbaResult[3] = a * 255;
+    return hsla2rgbaResult;
 }
 
 HeatCanvas.LINEAR = 1;
