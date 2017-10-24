@@ -82,7 +82,7 @@ HeatCanvas.prototype._render = function(f_value_color){
     var ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, this.width, this.height);
 
-    defaultColor = this.bgcolor || [0, 0, 0, 255];
+    var defaultColor = this.bgcolor || [0, 0, 0, 255];
     var canvasData = ctx.createImageData(this.width, this.height);
     for (var i=0; i<canvasData.data.length; i+=4){
         canvasData.data[i] = defaultColor[0]; // r
