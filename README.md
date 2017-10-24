@@ -12,6 +12,17 @@ Available via bower
 
 `bower install heatcanvas`
 
+Webpack Build
+-------------
+`npm run webpack`
+
+This will generate a build in the `/dist` folder. This includes the main `heatcanvas.js`, the `heatcanvas-worker.js`
+Web Worker script, and specific versions for 51 Maps, Baidu Maps, Google Maps, Leaflet Maps, and OpenLayers.
+
+To use, import into an HTML document using a `script` tag. The imports will be available at `HeatCanvas`,
+`HeatCanvas51Layer`, `HeatCanvasBaiduLayer`, `HeatCanvasOverlayView`, `HeatCanvasLeaflet`, and `HeatCanvasOpenLayers`
+respectively.
+
 Usage
 -----
 
