@@ -15,6 +15,10 @@
   ],
   "homepage": "https://sunng87.github.io/heatcanvas",
   "devDependencies": {
+    "copy-webpack-plugin": "^4.2.0",
     "webpack": "^3.8.1"
+  },
+  "scripts": {
+      "webpack": "webpack"
   }
 }

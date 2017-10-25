@@ -20,9 +20,4 @@
  * SOFTWARE.
  */
 
-var HeatCanvas = require("./heatcanvas.js");
-var HeatCanvas51Layer = require("./heatcanvas-51map");
-var HeatCanvasBaiduLayer = require("./heatcanvas-baidumap");
-var HeatCanvasOverlayView = require("./heatcanvas-googlemaps");
-var LeafletHeatcanvas = require("./heatcanvas-leaflet");
-var OpenLayersHeatcanvas = require("./heatcanvas-openlayers");
+export {default} from "./heatcanvas";

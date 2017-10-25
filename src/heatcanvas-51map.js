@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-var HeatCanvas = require("./heatcanvas");
+import {default as HeatCanvas} from "./heatcanvas";
 
 export default function HeatCanvas51Layer(map,options){
     options = options || {};
