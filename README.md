@@ -1,6 +1,8 @@
 heatcanvas
 ======================
 
+Note that this project is no longer active maintained. Please let me know(file an issue or send me email) if you are interested in taking over it.
+
 [![CDNJS](https://img.shields.io/cdnjs/v/heatcanvas.svg)](https://cdnjs.com/libraries/heatcanvas)
 
 This is a simple heatmap api based on HTML5 canvas. A heat map is a graphical representation of data where the values taken by a variable in a two-dimensional table are represented as colors, according to Wikipedia.
