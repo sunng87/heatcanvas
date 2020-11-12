@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-var HeatCanvas = require("./heatcanvas");
+import {default as HeatCanvas} from './heatcanvas.js';
 
 L.TileLayer.HeatCanvas = L.Class.extend({
 
     initialize: function(options, heatCanvasOptions){
         this.heatCanvasOptions = heatCanvasOptions;
-        this.data= [];
+        this.data = [];
         this._onRenderingStart = null;
         this._onRenderingEnd = null;
     },
@@ -52,7 +52,7 @@ L.TileLayer.HeatCanvas = L.Class.extend({
     },
 
     _initHeatCanvas: function(map, options){
-        options = options || {};                        
+        options = options || {};
         this._step = options.step || 1;
         this._degree = options.degree || HeatCanvas.LINEAR;
         this._opacity = options.opacity || 0.6;
@@ -110,7 +110,7 @@ L.TileLayer.HeatCanvas = L.Class.extend({
 
     clear: function(){
         this.heatmap.clear();
-		this.data = [];
+        this.data = [];
     },
 
     redraw: function(){
