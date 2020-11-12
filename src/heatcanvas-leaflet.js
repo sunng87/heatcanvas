@@ -61,17 +61,18 @@ L.TileLayer.HeatCanvas = L.Layer.extend({
         this._zIndex = options.zIndex || null;
         this._colorscheme = options.colorscheme || null;
 
+        var mapSize = this.map.getSize();
         var container = L.DomUtil.create('div', 'leaflet-heatmap-container');
         container.style.position = 'absolute';
-        container.style.width = this.map.getSize().x+"px";
-        container.style.height = this.map.getSize().y+"px";
+        container.style.width = mapSize.x+"px";
+        container.style.height = mapSize.y+"px";
         if (this._zIndex) {
             container.style.zIndex = this._zIndex;
         }
 
         var canv = document.createElement("canvas");
-        canv.width = this.map.getSize().x;
-        canv.height = this.map.getSize().y;
+        canv.width = mapSize.x;
+        canv.height = mapSize.y;
         canv.style.width = canv.width+"px";
         canv.style.height = canv.height+"px";
         canv.style.opacity = this._opacity;
