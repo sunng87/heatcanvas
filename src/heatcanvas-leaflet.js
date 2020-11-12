@@ -22,9 +22,11 @@
 
 import {default as HeatCanvas} from './heatcanvas.js';
 
-L.TileLayer.HeatCanvas = L.Class.extend({
+L.TileLayer.HeatCanvas = L.Layer.extend({
 
     initialize: function(options, heatCanvasOptions){
+        L.Util.setOptions(this, options);
+
         this.heatCanvasOptions = heatCanvasOptions;
         this.data = [];
         this._onRenderingStart = null;
@@ -56,12 +58,16 @@ L.TileLayer.HeatCanvas = L.Class.extend({
         this._step = options.step || 1;
         this._degree = options.degree || HeatCanvas.LINEAR;
         this._opacity = options.opacity || 0.6;
+        this._zIndex = options.zIndex || null;
         this._colorscheme = options.colorscheme || null;
 
         var container = L.DomUtil.create('div', 'leaflet-heatmap-container');
         container.style.position = 'absolute';
         container.style.width = this.map.getSize().x+"px";
         container.style.height = this.map.getSize().y+"px";
+        if (this._zIndex) {
+            container.style.zIndex = this._zIndex;
+        }
 
         var canv = document.createElement("canvas");
         canv.width = this.map.getSize().x;
@@ -109,7 +115,8 @@ L.TileLayer.HeatCanvas = L.Class.extend({
     },
 
     clear: function(){
-        this.heatmap.clear();
+        if (this.heatmap)
+	        this.heatmap.clear();
         this.data = [];
     },
 
@@ -119,8 +126,8 @@ L.TileLayer.HeatCanvas = L.Class.extend({
 
 });
 
-L.TileLayer.heatcanvas = function (options) {
-    return new L.TileLayer.HeatCanvas(options);
+L.TileLayer.heatcanvas = function (options, heatCanvasOptions) {
+    return new L.TileLayer.HeatCanvas(options, heatCanvasOptions);
 };
 
-export default L.TitleLayer.heatcanvas;
+export default L.TileLayer.heatcanvas;
