@@ -66,7 +66,7 @@ L.TileLayer.HeatCanvas = L.Layer.extend({
         container.style.position = 'absolute';
         container.style.width = mapSize.x+"px";
         container.style.height = mapSize.y+"px";
-        if (this._zIndex) {
+        if (this._zIndex != null) {
             container.style.zIndex = this._zIndex;
         }
 
