@@ -8,11 +8,11 @@ export default function HeatCanvas(canvas) {
     } else {
         this.canvas = canvas;
     }
-    if(this.canvas == null) {
+    if (this.canvas == null) {
         return null;
     }
 
-    this.worker = new Worker(HeatCanvas.getPath()+'heatcanvas-worker.js');
+    this._createWorker();
 
     this.width = this.canvas.width;
     this.height = this.canvas.height;
@@ -22,8 +22,8 @@ export default function HeatCanvas(canvas) {
 
     this.data = {};
     this.value = null;
-    this.valueWidth = null;
-    this.valueHeight = null;
+    this._valueWidth = null;
+    this._valueHeight = null;
 }
 
 HeatCanvas.prototype.resize = function(w, h) {
@@ -58,11 +58,18 @@ HeatCanvas.prototype.render = function(step, degree, f_value_color) {
     if (this.width <= 0 || this.height <= 0)
         return;
 
+    if (this._runCounter > 0) {
+        this.worker.terminate();
+        this._createWorker();
+    }
+    this._runCounter++;
+
     var self = this;
     this.worker.onmessage = function(e) {
+        self._runCounter--;
         self.value = e.data.value;
-        self.valueWidth = e.data.width;
-        self.valueHeight = e.data.height;
+        self._valueWidth = e.data.width;
+        self._valueHeight = e.data.height;
         self.data = {};
         self._render(f_value_color);
         if (self.onRenderingEnd) {
@@ -83,35 +90,41 @@ HeatCanvas.prototype.render = function(step, degree, f_value_color) {
     }
 };
 
+HeatCanvas.prototype._createWorker = function() {
+    this.worker = new Worker(HeatCanvas.getPath()+'heatcanvas-worker.js');
+    this._runCounter = 0;
+};
 
-HeatCanvas.prototype._render = function(f_value_color){
+HeatCanvas.prototype._render = function(f_value_color) {
     f_value_color = f_value_color || HeatCanvas.defaultValue2Color;
 
-    if (this.width <= 0 || this.height <= 0)
+    if (this.width <= 0 || this.height <= 0) {
         return;
+    }
 
     var ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, this.width, this.height);
 
     var defaultColor = this.bgcolor || [0, 0, 0, 255];
     var canvasData = ctx.createImageData(this.width, this.height);
-    for (var i=0; i<canvasData.data.length; i+=4){
+    for (var i=0; i<canvasData.data.length; i+=4) {
         canvasData.data[i] = defaultColor[0]; // r
         canvasData.data[i+1] = defaultColor[1];
         canvasData.data[i+2] = defaultColor[2];
         canvasData.data[i+3] = defaultColor[3];
     }
 
-    if (this.width != this.valueWidth || this.height != this.valueHeight)   // canvas was resized while worker was computing heatmap
+    if (this.width != this._valueWidth || this.height != this._valueHeight) {  // canvas was resized while worker was computing heatmap
         return;
+    }
 
     // maximum
     var maxValue = 0;
-    for(var id in this.value) {
+    for (var id in this.value) {
         maxValue = Math.max(this.value[id], maxValue);
     }
 
-    for(var pos in this.value){
+    for (var pos in this.value) {
         var x = Math.floor(pos%this.width);
         var y = Math.floor(pos/this.width);
 
@@ -130,7 +143,7 @@ HeatCanvas.prototype._render = function(f_value_color){
     ctx.putImageData(canvasData, 0, 0);
 };
 
-HeatCanvas.prototype.clear = function(){
+HeatCanvas.prototype.clear = function() {
     this.data = {};
     this.value = {};
 
