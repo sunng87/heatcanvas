@@ -45,15 +45,17 @@ L.TileLayer.HeatCanvas = L.Layer.extend({
         this.map = map;
         this._initHeatCanvas(this.map, this.heatCanvasOptions);
         map.on("moveend", this._redraw, this);
+        map.on("resize", this._resize, this);
         this._redraw();
     },
 
     onRemove: function(map) {
         map.getPanes().overlayPane.removeChild(this._div);
+        map.off("resize", this._resize, this);
         map.off("moveend", this._redraw, this);
     },
 
-    _initHeatCanvas: function(map, options){
+    _initHeatCanvas: function(map, options) {
         options = options || {};
         this._step = options.step || 1;
         this._degree = options.degree || HeatCanvas.LINEAR;
@@ -99,7 +101,8 @@ L.TileLayer.HeatCanvas = L.Layer.extend({
     _redraw: function() {
         this._resetCanvasPosition();
         this.heatmap.clear();
-        if (this.data.length > 0) {
+        var sz = this.map.getSize();
+        if (this.data.length > 0 && sz.x > 0 && sz.y > 0) {
             for (var i=0, l=this.data.length; i<l; i++) {
                 var lonlat = new L.LatLng(this.data[i].lat, this.data[i].lon);
                 var localXY = this.map.latLngToLayerPoint(lonlat);
@@ -115,13 +118,22 @@ L.TileLayer.HeatCanvas = L.Layer.extend({
         return this;
     },
 
-    clear: function(){
-        if (this.heatmap)
-	        this.heatmap.clear();
+    _resize: function() {
+        var sz = this.map.getSize();
+
+        this._div.style.width = sz.x + "px";
+        this._div.style.height = sz.y + "px";
+        this.heatmap.resize(sz.x, sz.y);
+    },
+
+    clear: function() {
+        if (this.heatmap) {
+            this.heatmap.clear();
+        }
         this.data = [];
     },
 
-    redraw: function(){
+    redraw: function() {
         this._redraw();
     }
 
