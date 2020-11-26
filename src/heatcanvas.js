@@ -2,36 +2,39 @@
  * Heatmap api based on canvas
  *
  */
-export default function HeatCanvas(canvas){
+export default function HeatCanvas(canvas) {
     if (typeof(canvas) == "string") {
         this.canvas = document.getElementById(canvas);
     } else {
         this.canvas = canvas;
     }
-    if(this.canvas == null){
+    if(this.canvas == null) {
         return null;
     }
-    
+
     this.worker = new Worker(HeatCanvas.getPath()+'heatcanvas-worker.js');
-    
+
     this.width = this.canvas.width;
     this.height = this.canvas.height;
 
     this.onRenderingStart = null;
     this.onRenderingEnd = null;
-    
+
     this.data = {};
+    this.value = null;
+    this.valueWidth = null;
+    this.valueHeight = null;
 }
 
-HeatCanvas.prototype.resize = function( w, h ) {
-  this.width = this.canvas.width = w;
-  this.height = this.canvas.height = h;
+HeatCanvas.prototype.resize = function(w, h) {
+    this.width = this.canvas.width = w;
+    this.height = this.canvas.height = h;
 
-  this.canvas.style.width = w + 'px';
-  this.canvas.style.height = h + 'px';
+    this.canvas.style.width = w + 'px';
+    this.canvas.style.height = h + 'px';
 };
 
-HeatCanvas.prototype.push = function(x, y, data){
+HeatCanvas.prototype.push = function(x, y, data) {
     // ignore all data out of extent
     if (x < 0 || x >= this.width) {
         return ;
@@ -41,23 +44,28 @@ HeatCanvas.prototype.push = function(x, y, data){
     }
 
     var id = x+y*this.width;
-    if(this.data[id]){
-        this.data[id] = this.data[id] + data;           
+    if (this.data[id]) {
+        this.data[id] = this.data[id] + data;
     } else {
         this.data[id] = data;
     }
 };
 
-HeatCanvas.prototype.render = function(step, degree, f_value_color){
+HeatCanvas.prototype.render = function(step, degree, f_value_color) {
     step = step || 1;
     degree = degree || HeatCanvas.LINEAR ;
 
+    if (this.width <= 0 || this.height <= 0)
+        return;
+
     var self = this;
-    this.worker.onmessage = function(e){
+    this.worker.onmessage = function(e) {
         self.value = e.data.value;
+        self.valueWidth = e.data.width;
+        self.valueHeight = e.data.height;
         self.data = {};
         self._render(f_value_color);
-        if (self.onRenderingEnd){
+        if (self.onRenderingEnd) {
             self.onRenderingEnd();
         }
     }
@@ -70,7 +78,7 @@ HeatCanvas.prototype.render = function(step, degree, f_value_color){
         'value': self.value
     };
     this.worker.postMessage(msg);
-    if (this.onRenderingStart){
+    if (this.onRenderingStart) {
         this.onRenderingStart();
     }
 };
@@ -78,6 +86,9 @@ HeatCanvas.prototype.render = function(step, degree, f_value_color){
 
 HeatCanvas.prototype._render = function(f_value_color){
     f_value_color = f_value_color || HeatCanvas.defaultValue2Color;
+
+    if (this.width <= 0 || this.height <= 0)
+        return;
 
     var ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, this.width, this.height);
@@ -90,13 +101,16 @@ HeatCanvas.prototype._render = function(f_value_color){
         canvasData.data[i+2] = defaultColor[2];
         canvasData.data[i+3] = defaultColor[3];
     }
-    
-    // maximum 
+
+    if (this.width != this.valueWidth || this.height != this.valueHeight)   // canvas was resized while worker was computing heatmap
+        return;
+
+    // maximum
     var maxValue = 0;
-    for(var id in this.value){
+    for(var id in this.value) {
         maxValue = Math.max(this.value[id], maxValue);
     }
-    
+
     for(var pos in this.value){
         var x = Math.floor(pos%this.width);
         var y = Math.floor(pos/this.width);
@@ -104,23 +118,22 @@ HeatCanvas.prototype._render = function(f_value_color){
         // MDC ImageData:
         // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
         var pixelColorIndex = y*this.width*4+x*4;
-        
+
         var color = HeatCanvas.hsla2rgba.apply(
-          null, f_value_color(this.value[pos] / maxValue));
+            null, f_value_color(this.value[pos] / maxValue));
+
         canvasData.data[pixelColorIndex] = color[0]; //r
         canvasData.data[pixelColorIndex+1] = color[1]; //g
         canvasData.data[pixelColorIndex+2] = color[2]; //b
         canvasData.data[pixelColorIndex+3] = color[3]; //a
-        }
-
+    }
     ctx.putImageData(canvasData, 0, 0);
-    
 };
 
 HeatCanvas.prototype.clear = function(){
     this.data = {};
     this.value = {};
-	
+
     this.canvas.getContext("2d").clearRect(0, 0, this.width, this.height);
 };
 
