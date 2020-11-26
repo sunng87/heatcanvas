@@ -33,10 +33,10 @@ HeatCanvas.prototype.resize = function( w, h ) {
 
 HeatCanvas.prototype.push = function(x, y, data){
     // ignore all data out of extent
-    if (x < 0 || x > this.width) {
+    if (x < 0 || x >= this.width) {
         return ;
     }
-    if (y < 0 || y > this.height) {
+    if (y < 0 || y >= this.height) {
         return;
     }
 
