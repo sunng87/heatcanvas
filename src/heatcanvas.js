@@ -21,7 +21,7 @@ export default function HeatCanvas(canvas) {
     this.onRenderingEnd = null;
 
     this.data = {};
-    this.value = null;
+    this.value = {};
     this._valueWidth = null;
     this._valueHeight = null;
 }
