@@ -90,13 +90,25 @@ HeatCanvas.prototype.render = function(step, degree, f_value_color) {
     }
 };
 
+
+HeatCanvas.prototype._paletteSize = 512;
+HeatCanvas.prototype._defaultPalette = null;
+
 HeatCanvas.prototype._createWorker = function() {
     this.worker = new Worker(HeatCanvas.getPath()+'heatcanvas-worker.js');
     this._runCounter = 0;
 };
 
 HeatCanvas.prototype._render = function(f_value_color) {
-    f_value_color = f_value_color || HeatCanvas.defaultValue2Color;
+    var makeColor;
+    if (!f_value_color) {
+        this._ensureDefaultPalette();
+        f_value_color = HeatCanvas.defaultValue2Color;
+        var t = this;
+        makeColor = function(value) { return t._defaultPalette[Math.round(value * t._paletteSize)]; };
+    }
+    else
+        makeColor = function(value) { return HeatCanvas.hsla2rgba.apply(null, f_value_color(value)); };
 
     if (this.width <= 0 || this.height <= 0) {
         return;
@@ -132,8 +144,7 @@ HeatCanvas.prototype._render = function(f_value_color) {
         // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
         var pixelColorIndex = y*this.width*4+x*4;
 
-        var color = HeatCanvas.hsla2rgba.apply(
-            null, f_value_color(this.value[pos] / maxValue));
+        var color = makeColor(this.value[pos] / maxValue);
 
         canvasData.data[pixelColorIndex] = color[0]; //r
         canvasData.data[pixelColorIndex+1] = color[1]; //g
@@ -153,6 +164,24 @@ HeatCanvas.prototype.clear = function() {
 HeatCanvas.prototype.exportImage = function() {
     return this.canvas.toDataURL();
 };
+
+HeatCanvas.prototype._ensureDefaultPalette = function() {
+    if (this._defaultPalette && this._defaultPalette.length == this._paletteSize + 1)
+        return this;
+
+    var res = [];
+    for (var j = 0; j <= this._paletteSize; j++) {
+        var c = HeatCanvas.hsla2rgba.apply(null, HeatCanvas.defaultValue2Color(j / this._paletteSize));
+        res[j] = new Uint8ClampedArray(4);
+        res[j][0] = c[0];
+        res[j][1] = c[1];
+        res[j][2] = c[2];
+        res[j][3] = c[3];
+    }
+
+    this._defaultPalette = res;
+    return this;
+}
 
 const defaultValue2ColorResult = new Float64Array(4);
 defaultValue2ColorResult[1] = 0.8;// s
