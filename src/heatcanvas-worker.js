@@ -63,5 +63,5 @@ function calc(params) {
             }
         }        
     }
-    postMessage({'value': value});
+    postMessage({'value': value, 'width': params.width, 'height': params.height});
 }
