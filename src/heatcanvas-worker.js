@@ -24,18 +24,21 @@ onmessage = function(e){
 }
 
 function calc(params) {
-    value = params.value || {};
-    degree = params.degree || 1;
+    var value = params.value || {};
+    var degree = params.degree || 1;
+    var step = params.step || 1;
 
-    for(var pos in params.data){
-        var data = params.data[pos];
-        var radius = Math.floor(Math.pow((data / params.step), 1/degree));
-        
+    var deg2 = degree / 2;
+    for (var pos in params.data) {
+        var data = params.data[pos] / step;       // we don't need absolute values, and this allows us to get rid of many step*pow(...)
+        var radius = Math.floor(Math.pow(data, 1/degree));
+        var radiusSq = Math.pow(radius, 2);
+
         var x = Math.floor(pos%params.width);
         var y = Math.floor(pos/params.width);
         
         // calculate point x.y 
-        for(var scanx=x-radius; scanx<x+radius; scanx+=1){            
+        for(var scanx=x-radius; scanx<x+radius; scanx+=1){
             // out of extend
             if(scanx<0 || scanx>params.width){
                 continue;
@@ -46,11 +49,11 @@ function calc(params) {
                     continue;
                 }                  
                 
-                var dist = Math.sqrt(Math.pow((scanx-x), 2)+Math.pow((scany-y), 2));
-                if(dist > radius){
+                var distSq = Math.pow((scanx-x), 2) + Math.pow((scany-y), 2);
+                if (distSq > radiusSq){
                     continue;
                 } else {
-                    var v = data - params.step * Math.pow(dist, degree);
+                    var v = data - Math.pow(distSq, deg2);
                     
                     var id = scanx+scany*params.width ;
                 
