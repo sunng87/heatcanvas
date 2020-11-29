@@ -13,9 +13,9 @@
     <p>Click on the canvas below to add some data, then hit the "HEAT MAP!" button. Refresh to reset. </p>
     <div><canvas width="400" height="300" id="canv"></canvas></div>
     <p>Value for each click: <input type="text" value="20" id="pressure" />
-    <button onclick="genData();">Generate Random Data</button>
-    <button onclick="render();">HEAT MAP!</button>
-    <button onclick="reset();">Reset</button>
+    <button id="genData">Generate Random Data</button>
+    <button id="render">HEAT MAP!</button>
+    <button id="reset">Reset</button>
     <span id="status"></span>
     </p>
     <p>Data Added: <span id="info">No Data.</span></p>
@@ -62,6 +62,10 @@
             // you can render the map with custom colors
             heatmap.render(1, null, null);
         }
+
+        document.getElementById("genData").onclick = genData;
+        document.getElementById("render").onclick = render;
+        document.getElementById("reset").onclick = reset;
     </script>
     <p>Watch the source code on <a href="https://github.com/sunng87/canvas-heatmap">github</a>. </p>
     <p><a href="googlemap.html">HeatCanvas on Google Maps.</a> and <a href="openstreetmap.html">OpenStreetMap</a></p>
