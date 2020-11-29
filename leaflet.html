@@ -4,10 +4,14 @@
         <meta charset="utf8" />
         <title>HeatCanvas on Leaflet</title>
 
-        <link rel="stylesheet" href="http://leaflet.cloudmade.com/dist/leaflet.css" />
-        <script src="http://leaflet.cloudmade.com/dist/leaflet.js" type="text/javascript"></script>
-        <script type="text/javascript" src="heatcanvas.js"></script>
-        <script type="text/javascript" src="heatcanvas-leaflet.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+              integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+              crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+                crossorigin=""></script>
+        <script type="module" src="heatcanvas.js"></script>
+        <script type="module" src="heatcanvas-leaflet.js"></script>
 
         <style type="text/css">
             #map{
@@ -57,7 +61,7 @@
             <p>This is
             a <a href="https://github.com/sunng87/heatcanvas">heatcanvas</a>
             layer
-            for <a href="http://leaflet.cloudmade.com/">leaflet</a>
+            for <a href="https://leafletjs.com/">leaflet</a>
             map api.</p>
             <p id="status"></p>
         </div>
