@@ -5,8 +5,8 @@
         <title>Google Heatmap</title>
 
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
-        <script type="text/javascript" src="heatcanvas.js"></script>
-        <script type="text/javascript" src="heatcanvas-googlemaps.js"></script>
+        <script type="module" src="heatcanvas.js"></script>
+        <script type="module" src="heatcanvas-googlemaps.js"></script>
 
         <style type="text/css">
             #map{
@@ -14,7 +14,9 @@
         </style>
 
         <script type="text/javascript">
-            function init() {
+            import {default as HeatCanvas} from './heatcanvas.js';
+
+            (function init() {
                 var latlng = new google.maps.LatLng(37, 104.2);
                 var myoptions = {
                     zoom: 4,
@@ -29,11 +31,11 @@
                 for(var i=0,l=data.length; i<l; i++) {
                     heatmap.pushData(data[i][0], data[i][1], data[i][2]);
                 }
-            }
+            })();
         </script>
     </head>
 
-    <body onload="init();">
+    <body>
         <div id="map" style="width:700px; height:500px;"></div>
     </body>
 </html>
