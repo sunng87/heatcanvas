@@ -1,85 +1,78 @@
 /**
- * Copyright 2010-2011 Sun Ning <classicning@gmail.com>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
-/**
  * Heatmap api based on canvas
  *
  */
-var HeatCanvas = function(canvas){
+export default function HeatCanvas(canvas) {
     if (typeof(canvas) == "string") {
         this.canvas = document.getElementById(canvas);
     } else {
         this.canvas = canvas;
     }
-    if(this.canvas == null){
+    if (this.canvas == null) {
         return null;
     }
-    
-    this.worker = new Worker(HeatCanvas.getPath()+'heatcanvas-worker.js');
-    
+
+    this._createWorker();
+
     this.width = this.canvas.width;
     this.height = this.canvas.height;
 
     this.onRenderingStart = null;
     this.onRenderingEnd = null;
-    
+
     this.data = {};
+    this.value = {};
+    this._valueWidth = null;
+    this._valueHeight = null;
+}
+
+HeatCanvas.prototype.resize = function(w, h) {
+    this.width = this.canvas.width = w;
+    this.height = this.canvas.height = h;
+
+    this.canvas.style.width = w + 'px';
+    this.canvas.style.height = h + 'px';
 };
 
-HeatCanvas.prototype.resize = function( w, h ) {
-  this.width = this.canvas.width = w;
-  this.height = this.canvas.height = h;
-
-  this.canvas.style.width = w + 'px';
-  this.canvas.style.height = h + 'px';
-};
-
-HeatCanvas.prototype.push = function(x, y, data){
+HeatCanvas.prototype.push = function(x, y, data) {
     // ignore all data out of extent
-    if (x < 0 || x > this.width) {
+    if (x < 0 || x >= this.width) {
         return ;
     }
-    if (y < 0 || y > this.height) {
+    if (y < 0 || y >= this.height) {
         return;
     }
 
     var id = x+y*this.width;
-    if(this.data[id]){
-        this.data[id] = this.data[id] + data;           
+    if (this.data[id]) {
+        this.data[id] = this.data[id] + data;
     } else {
         this.data[id] = data;
     }
 };
 
-HeatCanvas.prototype.render = function(step, degree, f_value_color){
+HeatCanvas.prototype.render = function(step, degree, f_value_color) {
     step = step || 1;
     degree = degree || HeatCanvas.LINEAR ;
 
+    if (this.width <= 0 || this.height <= 0)
+        return;
+
+    if (this._runCounter > 0) {
+        this.worker.terminate();
+        this._createWorker();
+    }
+    this._runCounter++;
+
     var self = this;
-    this.worker.onmessage = function(e){
+    this.worker.onmessage = function(e) {
+        self._runCounter--;
         self.value = e.data.value;
+        self._valueWidth = e.data.width;
+        self._valueHeight = e.data.height;
         self.data = {};
         self._render(f_value_color);
-        if (self.onRenderingEnd){
+        if (self.onRenderingEnd) {
             self.onRenderingEnd();
         }
     }
@@ -92,57 +85,79 @@ HeatCanvas.prototype.render = function(step, degree, f_value_color){
         'value': self.value
     };
     this.worker.postMessage(msg);
-    if (this.onRenderingStart){
+    if (this.onRenderingStart) {
         this.onRenderingStart();
     }
 };
 
 
-HeatCanvas.prototype._render = function(f_value_color){
-    f_value_color = f_value_color || HeatCanvas.defaultValue2Color;
+HeatCanvas.prototype._paletteSize = 512;
+HeatCanvas.prototype._defaultPalette = null;
+
+HeatCanvas.prototype._createWorker = function() {
+    this.worker = new Worker(HeatCanvas.getPath()+'heatcanvas-worker.js');
+    this._runCounter = 0;
+};
+
+HeatCanvas.prototype._render = function(f_value_color) {
+    var makeColor;
+    if (!f_value_color) {
+        this._ensureDefaultPalette();
+        f_value_color = HeatCanvas.defaultValue2Color;
+        var t = this;
+        makeColor = function(value) { return t._defaultPalette[Math.round(value * t._paletteSize)]; };
+    }
+    else
+        makeColor = function(value) { return HeatCanvas.hsla2rgba.apply(null, f_value_color(value)); };
+
+    if (this.width <= 0 || this.height <= 0) {
+        return;
+    }
 
     var ctx = this.canvas.getContext("2d");
     ctx.clearRect(0, 0, this.width, this.height);
 
-    defaultColor = this.bgcolor || [0, 0, 0, 255];
+    var defaultColor = this.bgcolor || [0, 0, 0, 255];
     var canvasData = ctx.createImageData(this.width, this.height);
-    for (var i=0; i<canvasData.data.length; i+=4){
+    for (var i=0; i<canvasData.data.length; i+=4) {
         canvasData.data[i] = defaultColor[0]; // r
         canvasData.data[i+1] = defaultColor[1];
         canvasData.data[i+2] = defaultColor[2];
         canvasData.data[i+3] = defaultColor[3];
     }
-    
-    // maximum 
+
+    if (this.width != this._valueWidth || this.height != this._valueHeight) {  // canvas was resized while worker was computing heatmap
+        return;
+    }
+
+    // maximum
     var maxValue = 0;
-    for(var id in this.value){
+    for (var id in this.value) {
         maxValue = Math.max(this.value[id], maxValue);
     }
-    
-    for(var pos in this.value){
+
+    for (var pos in this.value) {
         var x = Math.floor(pos%this.width);
         var y = Math.floor(pos/this.width);
 
         // MDC ImageData:
         // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
         var pixelColorIndex = y*this.width*4+x*4;
-        
-        var color = HeatCanvas.hsla2rgba.apply(
-          null, f_value_color(this.value[pos] / maxValue));
+
+        var color = makeColor(this.value[pos] / maxValue);
+
         canvasData.data[pixelColorIndex] = color[0]; //r
         canvasData.data[pixelColorIndex+1] = color[1]; //g
         canvasData.data[pixelColorIndex+2] = color[2]; //b
         canvasData.data[pixelColorIndex+3] = color[3]; //a
-        }
-
+    }
     ctx.putImageData(canvasData, 0, 0);
-    
 };
 
-HeatCanvas.prototype.clear = function(){
+HeatCanvas.prototype.clear = function() {
     this.data = {};
     this.value = {};
-	
+
     this.canvas.getContext("2d").clearRect(0, 0, this.width, this.height);
 };
 
@@ -150,16 +165,36 @@ HeatCanvas.prototype.exportImage = function() {
     return this.canvas.toDataURL();
 };
 
+HeatCanvas.prototype._ensureDefaultPalette = function() {
+    if (this._defaultPalette && this._defaultPalette.length == this._paletteSize + 1)
+        return this;
+
+    var res = [];
+    for (var j = 0; j <= this._paletteSize; j++) {
+        var c = HeatCanvas.hsla2rgba.apply(null, HeatCanvas.defaultValue2Color(j / this._paletteSize));
+        res[j] = new Uint8ClampedArray(4);
+        res[j][0] = c[0];
+        res[j][1] = c[1];
+        res[j][2] = c[2];
+        res[j][3] = c[3];
+    }
+
+    this._defaultPalette = res;
+    return this;
+}
+
+const defaultValue2ColorResult = new Float64Array(4);
+defaultValue2ColorResult[1] = 0.8;// s
+defaultValue2ColorResult[3] = 1.0;// a
 HeatCanvas.defaultValue2Color = function(value){
-    var h = (1 - value);
-    var l = value * 0.6;
-    var s = 0.8;
-    var a = 1;
-    return [h, s, l, a];
+    defaultValue2ColorResult[0] = (1 - value);// h
+    defaultValue2ColorResult[2] = value * 0.6;// l
+    return defaultValue2ColorResult;
 }
 
 // function copied from:
 // http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+const hsla2rgbaResult = new Uint8ClampedArray(4);
 HeatCanvas.hsla2rgba = function(h, s, l, a){
     var r, g, b;
 
@@ -182,7 +217,11 @@ HeatCanvas.hsla2rgba = function(h, s, l, a){
         b = hue2rgb(p, q, h - 1/3);
     }
 
-    return [r * 255, g * 255, b * 255, a * 255];
+    hsla2rgbaResult[0] = r * 255;
+    hsla2rgbaResult[1] = g * 255;
+    hsla2rgbaResult[2] = b * 255;
+    hsla2rgbaResult[3] = a * 255;
+    return hsla2rgbaResult;
 }
 
 HeatCanvas.LINEAR = 1;
@@ -193,11 +232,11 @@ HeatCanvas.getPath = function() {
     var scriptTags = document.getElementsByTagName("script");
     for (var i=0; i<scriptTags.length; i++) {
         var src = scriptTags[i].src;
-        var pos = src.indexOf("heatcanvas.js");
+        var match = src.match(/heatcanvas(-[a-z0-9]{32})?\.js/);
+        var pos = match ? match.index : 0;
         if (pos > 0) {
             return src.substring(0, pos);
         }
     }
     return "";
 }
-
