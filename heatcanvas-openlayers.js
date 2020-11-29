@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-import {default as HeatCanvas} from "./heatcanvas";
+import {default as HeatCanvas} from "./heatcanvas.js";
 
 OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
 
