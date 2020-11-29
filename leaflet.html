@@ -18,8 +18,10 @@
             }
         </style>
 
-        <script type="text/javascript">
-            function init(){
+        <script type="module">
+            import {default as HeatCanvas} from './heatcanvas.js';
+
+            (function init(){
               var map = new L.Map("map");
               var markerLayers = new L.LayerGroup();
                 var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/997/256/{z}/{x}/{y}.png',
@@ -51,11 +53,12 @@
                 map.addLayer(markerLayers);
                 L.control.layers({"heatmap":heatmap, "markers": markerLayers}).addTo(map);
 
-            }
+            })();
+
         </script>
     </head>
 
-    <body onload="init();">
+    <body>
         <div>
             <h1>Heatcanvas for Leaflet</h1>
             <p>This is
