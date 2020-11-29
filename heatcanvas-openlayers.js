@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+import {default as HeatCanvas} from "./heatcanvas";
+
 OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
 
     isBaseLayer: false,
@@ -28,7 +30,7 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
 
     initialize: function(name, map, options, heatCanvasOptions){
         OpenLayers.Layer.prototype.initialize.apply(this, [name, options]);
-        
+
         this.setMap(map);
         this.heatCanvasOptions = heatCanvasOptions;
         this.initHeatCanvas(this.map, this.heatCanvasOptions);
@@ -36,7 +38,7 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
     },
 
     initHeatCanvas: function(map, options){
-        options = options || {};                        
+        options = options || {};
         this._step = options.step || 1;
         this._degree = options.degree || HeatCanvas.LINEAR;
         this._opacity = options.opacity || 0.6;
@@ -59,7 +61,7 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
         this.div.appendChild(container);
         this._div = container;
     },
-    
+
     onMapResize: function() {
         var size = this.map.getSize();
         this.heatmap.resize( size.w, size.h );
@@ -68,7 +70,7 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
     pushData: function(lat, lon, value) {
         this.data.push({"lon":lon, "lat":lat, "v":value});
     },
-    
+
     _resetCanvasPosition: function() {
         var extent = this.map.getExtent();
         var nw = new OpenLayers.LonLat(extent.left, extent.top);
@@ -87,9 +89,9 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
                 lonlat = lonlat.transform(this.map.displayProjection, this.map.getProjectionObject())
                 var localXY = this.map.getViewPortPxFromLonLat(lonlat);
                 this.heatmap.push(
-                        Math.floor(localXY.x), 
-                        Math.floor(localXY.y), 
-                        this.data[i].v);
+                    Math.floor(localXY.x),
+                    Math.floor(localXY.y),
+                    this.data[i].v);
             }
 
             this.heatmap.render(this._step, this._degree, this._colorscheme);
@@ -102,3 +104,5 @@ OpenLayers.Layer.HeatCanvas = OpenLayers.Class(OpenLayers.Layer, {
 
     CLASS_NAME: "OpenLayers.Layer.HeatCanvas"
 });
+
+export default OpenLayers.Layer.HeatCanvas;
