@@ -4,17 +4,18 @@
         <meta charset="utf8" />
         <title>Baidu Heatmap</title>
 
-        <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.2"></script>
-        <script type="text/javascript" src="heatcanvas.js"></script>
-        <script type="text/javascript" src="heatcanvas-baidumap.js"></script>
+        <script type="text/javascript" src="https://api.map.baidu.com/api?v=1.2"></script>
 
         <style type="text/css">
             #map{
             }
         </style>
 
-        <script type="text/javascript">
-            function init() {
+        <script type="module">
+            import {default as HeatCanvas} from './heatcanvas.js';
+            import {default as HeatCanvasBaiduLayer} from './heatcanvas-baidumap.js';
+
+            (function init() {
                 var point = new BMap.Point(116,39);
                 var map = new BMap.Map(document.getElementById("map"));
                 map.centerAndZoom(point, 6);
@@ -25,11 +26,11 @@
                   heatmap.pushData(data[i][0], data[i][1], data[i][2]);
                 }
                 map.addOverlay(heatmap);
-            }
+            })();
         </script>
     </head>
 
-    <body onload="init();">
+    <body>
         <div id="map" style="width:700px; height:500px;"></div>
     </body>
 </html>
