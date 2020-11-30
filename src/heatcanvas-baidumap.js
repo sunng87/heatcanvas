@@ -76,8 +76,8 @@ HeatCanvasBaiduLayer.prototype.draw = function() {
      this.heatmap.clear();
      if(this.data.length>0) {
         for(var i=0 , l=this.data.length;i<l;i++) {
-            latlon = new  BMap.Point(this.data[i].lat, this.data[i].lon);
-            localXY = this._map.pointToOverlayPixel(latlon);
+            var latlon = new  BMap.Point(this.data[i].lat, this.data[i].lon);
+            var localXY = this._map.pointToOverlayPixel(latlon);
             this.heatmap.push(
                     Math.floor(localXY.x-sw.x),
                     Math.floor(localXY.y-ne.y),

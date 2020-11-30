@@ -84,8 +84,8 @@ HeatCanvasOverlayView.prototype.draw = function() {
     this.heatmap.clear();
     if (this.data.length > 0) {
         for (var i=0, l=this.data.length; i<l; i++) {
-            latlon = new google.maps.LatLng(this.data[i].lat, this.data[i].lon);
-            localXY = proj.fromLatLngToContainerPixel(latlon);
+            var latlon = new google.maps.LatLng(this.data[i].lat, this.data[i].lon);
+            var localXY = proj.fromLatLngToContainerPixel(latlon);
             this.heatmap.push(
                     Math.floor(localXY.x), 
                     Math.floor(localXY.y), 

@@ -72,12 +72,12 @@ HeatCanvas51Layer.prototype.reDraw = function(){
 
 HeatCanvas51Layer.prototype.draw = function() {
     var div = this._div;
-    a = this._map.getViewSize();
+    var a = this._map.getViewSize();
     var size = {width:a[0],height:a[1]}
 
     var bounds = this._map.getBoundsLatLng();
-    sw = this._map.getOverLayPosition(new LTPoint(bounds.getXmin(),bounds.getYmin()));
-    ne = this._map.getOverLayPosition(new LTPoint(bounds.getXmax(),bounds.getYmax()));
+    var sw = this._map.getOverLayPosition(new LTPoint(bounds.getXmin(),bounds.getYmin()));
+    var ne = this._map.getOverLayPosition(new LTPoint(bounds.getXmax(),bounds.getYmax()));
 
     div.style.left = sw[0]+'px';
     div.style.top  = ne[1]+'px';
@@ -87,8 +87,8 @@ HeatCanvas51Layer.prototype.draw = function() {
     this.heatmap.clear();
     if(this.data.length>0) {
         for(var i=0 , l=this.data.length;i<l;i++) {
-            latlon = new  LTPoint(this.data[i].lat, this.data[i].lon);
-            localXY = this._map.getOverLayPosition(latlon);
+            var latlon = new  LTPoint(this.data[i].lat, this.data[i].lon);
+            var localXY = this._map.getOverLayPosition(latlon);
             this.heatmap.push(
                     Math.floor(localXY[0]-sw[0]),
                     Math.floor(localXY[1]-ne[1]),
