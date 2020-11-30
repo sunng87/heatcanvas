@@ -4,18 +4,24 @@
         <meta charset="utf8" />
         <title>HeatCanvas on Leaflet</title>
 
-        <link rel="stylesheet" href="http://leaflet.cloudmade.com/dist/leaflet.css" />
-        <script src="http://leaflet.cloudmade.com/dist/leaflet.js" type="text/javascript"></script>
-        <script type="text/javascript" src="heatcanvas.js"></script>
-        <script type="text/javascript" src="heatcanvas-leaflet.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+              integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+              crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+                integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+                crossorigin=""></script>
+        <script type="module" src="heatcanvas.js"></script>
+        <script type="module" src="heatcanvas-leaflet.js"></script>
 
         <style type="text/css">
             #map{
             }
         </style>
 
-        <script type="text/javascript">
-            function init(){
+        <script type="module">
+            import {default as HeatCanvas} from './heatcanvas.js';
+
+            (function init(){
               var map = new L.Map("map");
               var markerLayers = new L.LayerGroup();
                 var cloudmadeUrl = 'http://{s}.tile.cloudmade.com/8ee2a50541944fb9bcedded5165f09d9/997/256/{z}/{x}/{y}.png',
@@ -47,17 +53,18 @@
                 map.addLayer(markerLayers);
                 L.control.layers({"heatmap":heatmap, "markers": markerLayers}).addTo(map);
 
-            }
+            })();
+
         </script>
     </head>
 
-    <body onload="init();">
+    <body>
         <div>
             <h1>Heatcanvas for Leaflet</h1>
             <p>This is
             a <a href="https://github.com/sunng87/heatcanvas">heatcanvas</a>
             layer
-            for <a href="http://leaflet.cloudmade.com/">leaflet</a>
+            for <a href="https://leafletjs.com/">leaflet</a>
             map api.</p>
             <p id="status"></p>
         </div>

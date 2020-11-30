@@ -21,7 +21,9 @@
  * SOFTWARE.
  */
 
-function HeatCanvasOverlayView(map, options){
+import {default as HeatCanvas} from './heatcanvas.js';
+
+export default function HeatCanvasOverlayView(map, options){
     options = options || {};
     this.setMap(map);
     this.heatmap = null;
@@ -56,7 +58,7 @@ HeatCanvasOverlayView.prototype.onAdd = function(){
     container.appendChild(canvas);
 
     this.heatmap = new HeatCanvas(canvas);
-    
+
     var panes = this.getPanes();
     panes.overlayLayer.appendChild(container);
     this._div = container;
@@ -82,15 +84,14 @@ HeatCanvasOverlayView.prototype.draw = function() {
     this.heatmap.clear();
     if (this.data.length > 0) {
         for (var i=0, l=this.data.length; i<l; i++) {
-            latlon = new google.maps.LatLng(this.data[i].lat, this.data[i].lon);
-            localXY = proj.fromLatLngToContainerPixel(latlon);
+            var latlon = new google.maps.LatLng(this.data[i].lat, this.data[i].lon);
+            var localXY = proj.fromLatLngToContainerPixel(latlon);
             this.heatmap.push(
-                    Math.floor(localXY.x), 
-                    Math.floor(localXY.y), 
-                    this.data[i].v);
+                Math.floor(localXY.x),
+                Math.floor(localXY.y),
+                this.data[i].v);
         }
 
         this.heatmap.render(this.step, this.degree, this.colorscheme);
     }
 }
-
