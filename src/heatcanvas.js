@@ -21,7 +21,7 @@ export default function HeatCanvas(canvas) {
     this.onRenderingEnd = null;
 
     this.data = {};
-    this.value = {};
+    this.value = null;
     this._valueWidth = null;
     this._valueHeight = null;
 }
@@ -126,24 +126,26 @@ HeatCanvas.prototype._render = function(f_value_color) {
         canvasData.data[i+3] = defaultColor[3];
     }
 
-    if (this.width != this._valueWidth || this.height != this._valueHeight) {  // canvas was resized while worker was computing heatmap
+    if (!Array.isArray(this.value) || this.width != this._valueWidth || this.height != this._valueHeight) {  // canvas was resized while worker was computing heatmap
+        return;
+    }
+
+    var valLen = this.value.length;
+    if (valLen != this._valueWidth * this._valueHeight) {
+        console.error('HeatCanvas: inconsistent data w*h != len', this._valueWidth, this._valueHeight, '!=', valLen);
         return;
     }
 
     // maximum
     var maxValue = 0;
-    for (var id in this.value) {
-        maxValue = Math.max(this.value[id], maxValue);
+    for (var id = 0; id < valLen; id++) {
+        if (this.value[id] > maxValue)
+            maxValue = this.value[id];
     }
 
-    for (var pos in this.value) {
-        var x = Math.floor(pos%this.width);
-        var y = Math.floor(pos/this.width);
-
-        // MDC ImageData:
-        // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
-        var pixelColorIndex = y*this.width*4+x*4;
-
+    // MDC ImageData:
+    // data = [r1, g1, b1, a1, r2, g2, b2, a2 ...]
+    for (var pos = 0, pixelColorIndex = 0; pos < valLen; pos++, pixelColorIndex += 4) {
         var color = makeColor(this.value[pos] / maxValue);
 
         canvasData.data[pixelColorIndex] = color[0]; //r
@@ -156,7 +158,7 @@ HeatCanvas.prototype._render = function(f_value_color) {
 
 HeatCanvas.prototype.clear = function() {
     this.data = {};
-    this.value = {};
+    this.value = null;
 
     this.canvas.getContext("2d").clearRect(0, 0, this.width, this.height);
 };
