@@ -155,6 +155,7 @@ function fastCalc(params, data, value, x, y, radius, radiusSq) {
     var v = 0.0;
 
     var xOffset = 0;
+    var xOffset2 = 0;
     var dx = 0, dy = 0, rx = 0.0, dySq = 0;
 
     var yOffset = base - radius * width;
@@ -165,8 +166,9 @@ function fastCalc(params, data, value, x, y, radius, radiusSq) {
         rx = Math.floor(Math.sqrt(radiusSq - dySq));
 
         dx = rx >= -dy ? dy + 1 : -rx;
-        xOffset = dx * width;
-        for (; dx < 0; dx++, xOffset += width) {
+        xOffset = dx * width + dy;
+        xOffset2 = dx * width - dy;
+        for (; dx < 0; dx++, xOffset += width, xOffset2 += width) {
             v = data - Math.pow(Math.pow(dx, 2) + dySq, deg2);
 
             // main and symmetrical over x=0, y = 0;
@@ -176,10 +178,10 @@ function fastCalc(params, data, value, x, y, radius, radiusSq) {
             value[yOffset2 - dx] += v;
 
             // symmetrical over y = x, y = -x
-            value[base + xOffset + dy] += v;
-            value[base + xOffset - dy] += v;
-            value[base - xOffset + dy] += v;
-            value[base - xOffset - dy] += v;
+            value[base + xOffset] += v;
+            value[base + xOffset2] += v;
+            value[base - xOffset2] += v;
+            value[base - xOffset] += v;
         }
         //dy == dx
         if (dySq <= radiusSq2) {
