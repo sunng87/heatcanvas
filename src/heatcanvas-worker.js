@@ -28,14 +28,8 @@ function calc(params) {
     var degree = +params.degree || 1;
     var step = +params.step || 1;
 
-    if (!Array.isArray(value)) {
-        value = new Array(params.width * params.height);
-        if (Array.prototype.fill) {
-            value.fill(0);
-        } else {    // IE has no Array.fill. Poor IE
-            for (var i = 0, len = value.length; i < len; i++)
-                value[i] = 0;
-        }
+    if (!(value instanceof Float32Array) || value.length != params.width * params.height) {
+        value = new Float32Array(params.width * params.height);
     }
 
     var deg2 = degree / 2;
