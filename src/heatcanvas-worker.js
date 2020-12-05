@@ -19,6 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 onmessage = function(e){
     calc(e.data);
 }
@@ -28,14 +29,8 @@ function calc(params) {
     var degree = +params.degree || 1;
     var step = +params.step || 1;
 
-    if (!Array.isArray(value)) {
-        value = new Array(params.width * params.height);
-        if (Array.prototype.fill) {
-            value.fill(0);
-        } else {    // IE has no Array.fill. Poor IE
-            for (var i = 0, len = value.length; i < len; i++)
-                value[i] = 0;
-        }
+    if (!(value instanceof Float32Array) || value.length != params.width * params.height) {
+        value = new Float32Array(params.width * params.height);
     }
 
     var deg2 = degree / 2;
@@ -65,9 +60,7 @@ function calc(params) {
         base2 = (y + radius)*params.width + x;
 
         // calculate point x.y
-        var limDx = 0;
-        var limRx = x > maxRx ? x : maxRx;      // maximum rx (radius for current scanline) that won't cross both (left and right) borders
-
+        var rLeft, rRight;                              // minimum of radius or distance to respective image border
         var maxY = y+radius < params.height - 1 ? y+radius : (params.height - 1);
         for (scany = y - radius; scany < y; scany++, base += params.width, base2 -= params.width) {
             scany2 = (y + y - scany);
@@ -77,40 +70,69 @@ function calc(params) {
             dySq = Math.pow(scany-y, 2);
             rx = Math.floor(Math.sqrt(radiusSq - dySq));
 
-            limDx = rx < maxRx ? -rx : -maxRx;      // minimum dx (since dx is < 0), not to cross right border
-            for (dx = rx < limRx ? -rx : -limRx; dx < 0; dx++) {
+            rLeft = rx > x ? x : rx;
+            rRight = rx > maxRx ? maxRx : rx;
+
+            if (rLeft < rRight) {
+                for (dx = rLeft + 1; dx <= rRight; dx++) {
+                    v = data - Math.pow(Math.pow(dx, 2) + dySq, deg2);
+
+                    if (scany >= 0)
+                        value[base + dx] += v;
+                    if (scany2 <= maxY)
+                        value[base2 + dx] += v;
+                }
+            }
+            else if (rRight < rLeft) {
+                for (dx = rRight + 1; dx <= rLeft; dx++) {
+                    v = data - Math.pow(Math.pow(dx, 2) + dySq, deg2);
+                    if (scany >= 0)
+                        value[base - dx] += v;
+                    if (scany2 <= maxY)
+                        value[base2 - dx] += v;
+                }
+            }
+
+            for (dx = rRight < rLeft ? rRight : rLeft; dx > 0; dx--) {
                 v = data - Math.pow(Math.pow(dx, 2) + dySq, deg2);
 
                 if (scany >= 0) {
-                    if (x + dx >= 0)
-                        value[base + dx] += v;
-                    if (dx >= limDx)
-                        value[base - dx] += v;
+                    value[base - dx] += v;
+                    value[base + dx] += v;
                 }
                 if (scany2 <= maxY) {
-                    if (x + dx >= 0)
-                        value[base2 + dx] += v;
-                    if (dx >= limDx)
-                        value[base2 - dx] += v;
+                    value[base2 - dx] += v;
+                    value[base2 + dx] += v;
                 }
             }
             // dx == 0
             v = data - Math.pow(dySq, deg2);
-            if (scany >= 0)
+            if (scany >= 0) {
                 value[base] += v;
-            if (scany2 <= maxY)
+            }
+            if (scany2 <= maxY) {
                 value[base2] += v;
+            }
         }
 
         // dy == 0 && dx != 0
+        // attention!  power (sqrt(dx^2), degree) == power(dx, degree), but dx SHOULD be non-negative, since degree can be float!
         base = y*params.width + x;
-        limDx = radius < maxRx ? -radius : -maxRx;
-        for (dx = radius < limRx ? -radius : -limRx; dx < 0; dx++) {
-            v = data - Math.pow(-dx, degree);   // attention!  power (sqrt(dx^2), degree) == power(dx, degree), but dx < 0 while degree can be float!
-            if (x + dx >= 0)
-                value[base + dx] += v;
-            if (dx >= limDx)
-                value[base - dx] += v;
+        rLeft = radius > x ? x : radius;
+        rRight = radius > maxRx ? maxRx : radius;
+        if (rLeft < rRight) {
+            for (dx = rLeft + 1; dx <= rRight; dx++)
+                value[base + dx] += data - Math.pow(dx, degree);
+        }
+        else if (rRight < rLeft) {
+            for (dx = rRight + 1; dx <= rLeft; dx++)
+                value[base - dx] += data - Math.pow(dx, degree);
+        }
+
+        for (dx = rRight < rLeft ? rRight : rLeft; dx > 0; dx--) {
+            v = data - Math.pow(dx, degree);
+            value[base - dx] += v;
+            value[base + dx] += v;
         }
 
         // dy == dx == 0
@@ -133,6 +155,7 @@ function fastCalc(params, data, value, x, y, radius, radiusSq) {
     var v = 0.0;
 
     var xOffset = 0;
+    var xOffset2 = 0;
     var dx = 0, dy = 0, rx = 0.0, dySq = 0;
 
     var yOffset = base - radius * width;
@@ -143,8 +166,9 @@ function fastCalc(params, data, value, x, y, radius, radiusSq) {
         rx = Math.floor(Math.sqrt(radiusSq - dySq));
 
         dx = rx >= -dy ? dy + 1 : -rx;
-        xOffset = dx * width;
-        for (; dx < 0; dx++, xOffset += width) {
+        xOffset = dx * width + dy;
+        xOffset2 = dx * width - dy;
+        for (; dx < 0; dx++, xOffset += width, xOffset2 += width) {
             v = data - Math.pow(Math.pow(dx, 2) + dySq, deg2);
 
             // main and symmetrical over x=0, y = 0;
@@ -154,10 +178,10 @@ function fastCalc(params, data, value, x, y, radius, radiusSq) {
             value[yOffset2 - dx] += v;
 
             // symmetrical over y = x, y = -x
-            value[base + xOffset + dy] += v;
-            value[base + xOffset - dy] += v;
-            value[base - xOffset + dy] += v;
-            value[base - xOffset - dy] += v;
+            value[base + xOffset] += v;
+            value[base + xOffset2] += v;
+            value[base - xOffset2] += v;
+            value[base - xOffset] += v;
         }
         //dy == dx
         if (dySq <= radiusSq2) {

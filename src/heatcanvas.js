@@ -126,7 +126,7 @@ HeatCanvas.prototype._render = function(f_value_color) {
         canvasData.data[i+3] = defaultColor[3];
     }
 
-    if (!Array.isArray(this.value) || this.width != this._valueWidth || this.height != this._valueHeight) {  // canvas was resized while worker was computing heatmap
+    if (!(this.value instanceof Float32Array) || this.width != this._valueWidth || this.height != this._valueHeight) {  // canvas was resized while worker was computing heatmap
         return;
     }
 
