@@ -70,19 +70,19 @@ HeatCanvas.prototype.render = function(step, degree, f_value_color) {
         self.value = e.data.value;
         self._valueWidth = e.data.width;
         self._valueHeight = e.data.height;
-        self.data = {};
+        self.data = {};                         // can spoil next rendering if onmessage happens between HeatCanvas.push and next render!
         self._render(f_value_color);
         if (self.onRenderingEnd) {
             self.onRenderingEnd();
         }
     }
     var msg = {
-        'data': self.data,
-        'width': self.width,
-        'height': self.height,
+        'data': this.data,
+        'width': this.width,
+        'height': this.height,
         'step': step,
         'degree': degree,
-        'value': self.value
+        'value': this.value
     };
     this.worker.postMessage(msg);
     if (this.onRenderingStart) {
