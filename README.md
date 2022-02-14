@@ -7,7 +7,7 @@ Note that this project is no longer active maintained. Please let me know(file a
 
 This is a simple heatmap api based on HTML5 canvas. A heat map is a graphical representation of data where the values taken by a variable in a two-dimensional table are represented as colors, according to Wikipedia.
 
-You can find an interactive demo at [http://sunng87.github.com/heatcanvas](http://sunng87.github.com/heatcanvas "Visit the live demo")
+You can find an interactive demo at [http://sunng87.github.io/heatcanvas](http://sunng87.github.io/heatcanvas "Visit the live demo")
 
 Available via bower
 -------------------
@@ -130,8 +130,8 @@ Other extensions
 
 There are also HeatCanvas extensions for:
 
-* Baidu Map ([demo](http://sunng87.github.com/heatcanvas/baidumap.html "BaiduMap Demo"))
-* Cloudmade Leaflet ([demo](http://sunng87.github.com/heatcanvas/leaflet.html "Leaflet Demo"))
+* Baidu Map ([demo](http://sunng87.github.io/heatcanvas/baidumap.html "BaiduMap Demo"))
+* Cloudmade Leaflet ([demo](http://sunng87.github.io/heatcanvas/leaflet.html "Leaflet Demo"))
 
 These extensions share similar API mentioned above. You can browse the source
 code of our demos to get detail.
